@@ -1,9 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const db = require("../dbSingleton").getConnection(); // db
 const enemyController = require("../controllers/enemyController");
 
-// 1. return all userss
-router.get("/", enemyController.enemy);
-// ela rw7
+// return all enemies
+router.get("/allEnemies", enemyController.allEnemies);
+
+// return single Enemy
+router.get("/singleEnemy/:id", enemyController.singleEnemy);
+
 module.exports = router;

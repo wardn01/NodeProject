@@ -2,7 +2,6 @@ const db = require("../dbSingleton").getConnection(); // db
 const bcrypt = require("bcrypt"); // password
 
 const register = (req, res) => {
-  //git data
   const { username, nickname, email, password } = req.body;
   if (!username || !nickname || !email || !password) {
     return res.status(400).json({ message: "Missing data" });

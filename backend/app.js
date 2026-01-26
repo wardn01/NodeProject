@@ -7,6 +7,7 @@ app.use(express.urlencoded({ extended: true }));
 
 const userRouter = require("./routes/usersRoute");
 const enemiesRouter = require("./routes/enemiesRoute");
+const buildsRouter = require("./routes/buildsRoute");
 
 app.use(
   session({
@@ -18,6 +19,7 @@ app.use(
 );
 
 app.use("/user", userRouter);
-app.use("/enemies", enemiesRouter);
+app.use("/enemy", enemiesRouter);
+app.use("/build", buildsRouter);
 
 app.listen(3000, () => console.log("Server running on http://localhost:3000"));
