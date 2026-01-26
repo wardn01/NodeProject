@@ -23,9 +23,9 @@ const singleEnemy = (req, res) => {
     if (err) return res.status(500).send("Error on server.", err);
 
     if (results.length === 0) {
-      return res.status(404).send({ message: "Enemy not found" });
+      return res.status(404).send({ message: "Build deleted successfully!" });
     }
-    res.status(200).json(results);
+    res.status(200).json(results[0]);
   });
 };
 

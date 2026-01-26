@@ -35,8 +35,8 @@ const login = (req, res) => {
   if (!username || !password) {
     return res.status(400).json({ message: "Missing data" });
   }
-  const query = "SELECT * FROM users WHERE username = ?";
-  db.query(query, [username], (err, results) => {
+  const query = "SELECT * FROM users WHERE username = ? OR email = ?";
+  db.query(query, [username, username], (err, results) => {
     if (err) return res.status(500).send({ message: "Error on server." });
 
     if (results.length === 0) {
@@ -55,7 +55,7 @@ const login = (req, res) => {
       } else {
         return res
           .status(400)
-          .send({ message: "Invalid username or password." });
+          .send({ message: "Invalid username/email or password." });
       }
     });
   });
