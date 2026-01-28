@@ -6,7 +6,7 @@ import { useState } from "react";
  * auth component
  * @returns Auth.jsx
  */
-function Auth({ setisAuth }) {
+function Auth({ setisAuth, setUser, setAllEnemies }) {
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
     username: "",
@@ -14,28 +14,35 @@ function Auth({ setisAuth }) {
     email: "",
     password: "",
   });
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const url = isLogin
       ? "http://localhost:8000/user/login"
       : "http://localhost:8000/user/register";
-    axios
-      .post(url, formData, { withCredentials: true })
-      .then((res) => {
-        console.log(res.data);
-        if (isLogin) {
-          setisAuth(true);
-        } else {
-          setIsLogin(true);
-        }
-      })
-      .catch((error) => {
-        console.error("Error during authentication:", error);
+    try {
+      const loginRes = await axios.post(url, formData, {
+        withCredentials: true,
       });
+      if (isLogin) {
+        setUser(loginRes.data.user);
+        const enemiesRes = await axios.get(
+          "http://localhost:8000/enemy/allEnemies",
+          {
+            withCredentials: true,
+          },
+        );
+        setAllEnemies(enemiesRes.data);
+        setisAuth(true);
+      } else {
+        setIsLogin(true);
+      }
+    } catch (error) {
+      console.error("Error during authentication:", error);
+    }
   };
 
   return (
