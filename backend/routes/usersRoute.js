@@ -7,8 +7,9 @@ const checkAuth = require("../middleware/authMiddleware");
 router.post("/register", userController.register);
 // user/login
 router.post("/login", userController.login);
+// user/profile
+router.get("/profile", checkAuth, userController.profile);
 // user/logout
 router.post("/logout", checkAuth, userController.logout);
 
-// 2l l3esa esawe hek controller...... aw ana b3den bn2lhn
 module.exports = router;

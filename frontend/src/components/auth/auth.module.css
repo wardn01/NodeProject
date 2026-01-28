@@ -1,0 +1,55 @@
+.authContainer {
+  width: 400px;
+  margin: 50px auto;
+  padding: 20px;
+  border: 1px solid #888888;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-color: var(--color-light-grey);
+  font-family: var(--font-secondary);
+}
+.authForm {
+  display: flex;
+  flex-direction: column;
+}
+
+.authHeading {
+  text-align: center;
+  margin-bottom: 20px;
+  font-family: var(--font-header);
+}
+
+.authInput {
+  margin-bottom: 15px;
+  padding: 10px;
+  font-size: 1.6rem;
+  border: 1px solid #888888;
+  border-radius: 3px;
+}
+
+.authSubmitButton {
+  margin-top: 10px;
+  padding: 10px;
+  font-size: 1.6rem;
+  background-color: var(--color-deep-blue);
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.authSubmitButton:hover {
+  background-color: var(--color-slate-blue);
+}
+
+.authToggle {
+  margin-top: 15px;
+  text-align: center;
+  font-size: 1.4rem;
+  color: var(--color-slate-blue);
+  cursor: pointer;
+}
+
+.authToggle:hover {
+  text-decoration: underline;
+}

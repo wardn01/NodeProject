@@ -1,0 +1,36 @@
+.profileContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+.profileControls {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.profileButton {
+  margin: 10px;
+  padding: 10px 15px;
+  font-size: 1.6rem;
+  background-color: var(--color-deep-blue);
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.profileButton:hover {
+  background-color: var(--color-slate-blue);
+}
+
+.profileText {
+  font-size: 2.4rem;
+  font-family: var(--font-header);
+  margin-bottom: 15px;
+}
+
+.profileData {
+  margin-bottom: 10px;
+}

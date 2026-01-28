@@ -32,6 +32,9 @@ const register = (req, res) => {
 
 const login = (req, res) => {
   const { username, password } = req.body;
+
+  console.log(username);
+
   if (!username || !password) {
     return res.status(400).json({ message: "Missing data" });
   }
@@ -51,7 +54,10 @@ const login = (req, res) => {
 
       if (isMatch) {
         req.session.user = user;
-        return res.send({ message: "You have successfully logged in." });
+        return res.send({
+          message: "You have successfully logged in.",
+          user: req.session.user,
+        });
       } else {
         return res
           .status(400)
@@ -59,6 +65,11 @@ const login = (req, res) => {
       }
     });
   });
+};
+
+const profile = (req, res) => {
+  res.send({ user: req.session.user });
+  console.log("Profile accessed:", req.session.user);
 };
 
 const logout = (req, res) => {
@@ -70,4 +81,4 @@ const logout = (req, res) => {
   });
 };
 
-module.exports = { register, login, logout };
+module.exports = { register, login, profile, logout };
