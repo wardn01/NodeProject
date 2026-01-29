@@ -4,37 +4,13 @@ import Auth from "../auth/Auth";
 import Profile from "../profile/Profile";
 import AllEnemies from "../allEnemies/AllEnemies";
 
-function Main({ isAuth, setIsAuth }) {
-  const [user, setUser] = useState(null);
-  const [allEnemies, setAllEnemies] = useState([]);
-  const [selectedEnemy, setSelectedEnemy] = useState(null);
-
-  const [propAllEnemies, setPropAllEnemies] = useState(false);
-
+function Main({ page, setPage }) {
   return (
     <main className={styles.main}>
-      {!isAuth ? (
-        <Auth
-          setisAuth={setIsAuth}
-          setUser={setUser}
-          setAllEnemies={setAllEnemies}
-        />
-      ) : (
-        <div>
-          <Profile user={user} />
-
-          <button onClick={() => setPropAllEnemies(!propAllEnemies)}>
-            "Show Enemies"
-          </button>
-          {propAllEnemies && (
-            <AllEnemies
-              allEnemies={allEnemies}
-              setSelectedEnemy={setSelectedEnemy}
-              setPropAllEnemies={setPropAllEnemies}
-            />
-          )}
-        </div>
-      )}
+      {page === "authPage" && <Auth setPage={setPage} />}
+      {page === "mainPage" && <button onClick={() => setPage("allEnemiesProp")}>Enemies</button>}
+      {page === "allEnemiesProp" && <AllEnemies setPage={setPage} />}
+      {page === "profilePage" && <Profile setPage={setPage} />}
     </main>
   );
 }

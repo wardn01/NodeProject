@@ -1,57 +1,79 @@
-import axios from "axios";
 import styles from "./profile.module.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
-const Profile = ({ setisAuth }) => {
+const Profile = ({ setPage }) => {
   const [profileData, setProfileData] = useState(null);
-  const getProfileData = () => {
-    axios
-      .get("http://localhost:8000/user/profile", { withCredentials: true })
-      .then((res) => {
-        setProfileData(res.data.user);
-        console.log(res.data.user);
-      })
-      .catch((error) => {
+
+  useEffect(() => {
+    const getProfileData = async () => {
+      try {
+        const profileData = await axios.get(
+          "http://localhost:8000/user/profile",
+          {
+            withCredentials: true,
+          },
+        );
+        setProfileData(profileData.data.user);
+      } catch (error) {
         console.error("Error fetching profile data:", error);
-      });
-  };
-  const handleLogout = () => {
-    axios
-      .post("http://localhost:8000/user/logout", {}, { withCredentials: true })
-      .then((res) => {
-        console.log(res.data.message);
-        setProfileData(null);
-        setisAuth(false);
-      })
-      .catch((error) => {
-        console.error("Error during logout:", error);
-      });
+      }
+    };
+    getProfileData();
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await axios.post(
+        "http://localhost:8000/user/logout",
+        {},
+        { withCredentials: true },
+      );
+      setPage("authPage");
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
   };
 
   return (
     <div className={styles.profileContainer}>
-      <div className={styles.profileControls}>
-        <p className={styles.profileText}>Profile Page</p>
-        <button className={styles.profileButton} onClick={getProfileData}>
-          Get Profile Data
-        </button>
-        <button className={styles.profileButton} onClick={handleLogout}>
-          Logout
-        </button>
+      <div className={styles.profileHeader}>
+        <h2 className={styles.profileTitle}>User Profile</h2>
       </div>
-      <div className={styles.profileData}>
-        <p className={styles.profileInfo}>Profile Information</p>
-        <p className={styles.profileInfo}>
-          Name: {profileData?.username || "Not available"}
-        </p>
-        <p className={styles.profileInfo}>
-          Email: {profileData?.email || "Not available"}
-        </p>
-        <p className={styles.profileInfo}>
-          Nickname: {profileData?.nickname || "Not available"}
-        </p>
-        <p className={styles.profileInfo}>password: *******</p>
-      </div>
+
+      {profileData ? (
+        <div className={styles.profileCard}>
+          <div className={styles.avatar}>
+            {profileData.username?.charAt(0).toUpperCase()}
+          </div>
+
+          <div className={styles.infoGroup}>
+            <label>Username</label>
+            <p>{profileData.username}</p>
+          </div>
+
+          <div className={styles.infoGroup}>
+            <label>Nickname</label>
+            <p>{profileData.nickname}</p>
+          </div>
+
+          <div className={styles.infoGroup}>
+            <label>Email Address</label>
+            <p>{profileData.email}</p>
+          </div>
+
+          <div className={styles.infoGroup}>
+            <label>Password</label>
+            <p>********</p>
+          </div>
+
+          <button className={styles.logoutButton} onClick={handleLogout}>
+            Logout from Session
+          </button>
+        </div>
+      ) : (
+        <p className={styles.loading}>Loading profile details...</p>
+      )}
     </div>
   );
 };

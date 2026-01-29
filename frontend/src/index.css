@@ -31,7 +31,6 @@ body {
 }
 
 :root {
-
   /* colors */
   --color-dark-navy: #0c1821;
   --color-deep-blue: #1b2a41;
@@ -43,7 +42,7 @@ body {
   --color-white: #ffffff;
 
   /* font family */
-  --font-header: "Paytone One", sans-serif;
-  --font-secondary: "Raleway", sans-serif;
-
+  --font-header: "Chakra Petch", sans-serif;
+  --font-main: "Inter", sans-serif;
+  --font-ui: "Space Grotesk", sans-serif;
 }

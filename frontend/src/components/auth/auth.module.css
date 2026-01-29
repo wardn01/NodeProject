@@ -1,13 +1,16 @@
 .authContainer {
-  width: 400px;
-  margin: 50px auto;
-  padding: 20px;
-  border: 1px solid #888888;
-  border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  background-color: var(--color-light-grey);
-  font-family: var(--font-secondary);
+  width: 100%;
+  max-width: 45rem;
+  margin: 8rem auto;
+  padding: 4rem;
+  background-color: var(--color-deep-blue);
+  border: 0.2rem solid var(--color-slate-blue);
+  border-radius: 2rem;
+  box-shadow: 0 2rem 5rem rgba(0, 0, 0, 0.6);
+  position: relative;
+  overflow: hidden;
 }
+
 .authForm {
   display: flex;
   flex-direction: column;
@@ -15,41 +18,66 @@
 
 .authHeading {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 3rem;
   font-family: var(--font-header);
+  color: var(--color-white);
+  font-size: 3.2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2rem;
+  text-shadow: 0 0 1rem rgba(81, 229, 255, 0.3);
 }
 
 .authInput {
-  margin-bottom: 15px;
-  padding: 10px;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
   font-size: 1.6rem;
-  border: 1px solid #888888;
-  border-radius: 3px;
+  font-family: var(--font-main);
+  background-color: var(--color-dark-navy);
+  border: 0.1rem solid var(--color-slate-blue);
+  border-radius: 1rem;
+  color: var(--color-light-grey);
+  transition: all 0.3s ease;
+}
+
+.authInput:focus {
+  outline: none;
+  border-color: var(--color-white);
+  box-shadow: 0 0 1rem rgba(255, 255, 255, 0.1);
+  background-color: #162531;
 }
 
 .authSubmitButton {
-  margin-top: 10px;
-  padding: 10px;
-  font-size: 1.6rem;
-  background-color: var(--color-deep-blue);
-  color: white;
-  border: none;
-  border-radius: 3px;
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  font-size: 1.8rem;
+  font-family: var(--font-ui);
+  text-transform: uppercase;
+  background: linear-gradient(to right, var(--color-slate-blue), var(--color-deep-blue));
+  color: var(--color-white);
+  border: 0.2rem solid var(--color-light-grey);
+  border-radius: 1.2rem;
   cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .authSubmitButton:hover {
-  background-color: var(--color-slate-blue);
+  background: var(--color-white);
+  color: var(--color-dark-navy);
+  transform: translateY(-0.3rem);
+  box-shadow: 0 0 2rem rgba(255, 255, 255, 0.2);
 }
 
 .authToggle {
-  margin-top: 15px;
+  margin-top: 2rem;
   text-align: center;
   font-size: 1.4rem;
-  color: var(--color-slate-blue);
+  font-family: var(--font-main);
+  color: var(--color-gray);
   cursor: pointer;
+  transition: color 0.3s ease;
 }
 
 .authToggle:hover {
-  text-decoration: underline;
+  color: var(--color-white);
+  text-decoration: none;
 }

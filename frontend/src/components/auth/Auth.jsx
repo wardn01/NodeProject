@@ -6,7 +6,7 @@ import { useState } from "react";
  * auth component
  * @returns Auth.jsx
  */
-function Auth({ setisAuth, setUser, setAllEnemies }) {
+function Auth({ setPage }) {
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
     username: "",
@@ -18,25 +18,18 @@ function Auth({ setisAuth, setUser, setAllEnemies }) {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const url = isLogin
       ? "http://localhost:8000/user/login"
       : "http://localhost:8000/user/register";
     try {
-      const loginRes = await axios.post(url, formData, {
+      const loginData = await axios.post(url, formData, {
         withCredentials: true,
       });
       if (isLogin) {
-        setUser(loginRes.data.user);
-        const enemiesRes = await axios.get(
-          "http://localhost:8000/enemy/allEnemies",
-          {
-            withCredentials: true,
-          },
-        );
-        setAllEnemies(enemiesRes.data);
-        setisAuth(true);
+        setPage("mainPage");
       } else {
         setIsLogin(true);
       }

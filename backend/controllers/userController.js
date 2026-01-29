@@ -69,7 +69,6 @@ const login = (req, res) => {
 
 const profile = (req, res) => {
   res.send({ user: req.session.user });
-  console.log("Profile accessed:", req.session.user);
 };
 
 const logout = (req, res) => {

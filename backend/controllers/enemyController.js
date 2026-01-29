@@ -8,7 +8,7 @@ const allEnemies = (req, res) => {
     `;
   db.query(query, (err, results) => {
     if (err) return res.status(500).send("Error on server.");
-    res.status(200).json(results);
+    res.status(200).json({ enemies: results });
   });
 };
 
@@ -25,7 +25,7 @@ const singleEnemy = (req, res) => {
     if (results.length === 0) {
       return res.status(404).send({ message: "Build deleted successfully!" });
     }
-    res.status(200).json(results[0]);
+    res.status(200).json({ enemy: results[0] });
   });
 };
 

@@ -1,13 +1,31 @@
 import styles from "./allEnemies.module.css";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
-const AllEnemies = ({ allEnemies, setSelectedEnemy, setPropAllEnemies }) => {
+const AllEnemies = ({setPage}) => {
+  const [allEnemies, setAllEnemies] = useState([]);
+  const [selectedEnemy, setSelectedEnemy] = useState(null);
+
+  useEffect(() => {
+    const fetchEnemies = async () => {
+      try {
+        const enemiesData = await axios.get("http://localhost:8000/enemy/allEnemies");
+        setAllEnemies(enemiesData.data.enemies);
+      } catch (error) {
+        console.error("Error fetching enemies:", error);
+      }
+    };
+
+    fetchEnemies();
+  }, []);
+
   return (
     <div className={styles.allEnemiesContainer}>
       <div className={styles.allEnemiesHeader}>
         <p className={styles.allEnemiesHeaderTitle}>Select an enemy</p>
         <p
           className={styles.allEnemiesCloseButton}
-          onClick={() => setPropAllEnemies(false)}
+          onClick={() => setPage("mainPage")}
         >
           X
         </p>

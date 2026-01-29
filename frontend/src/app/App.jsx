@@ -6,18 +6,20 @@ import Main from "../components/main/Main";
 import { useState } from "react";
 
 /**
- * Main SIte component
+ * App component
  * @returns
  */
 export default function App() {
-  const [isAuth, setIsAuth] = useState(false);
+  const [page, setPage] = useState("authPage");
   return (
     <div className={styles.app}>
-      {isAuth && <Header title={"Theme"} />}
+      {page !== "authPage" && (
+        <Header page={page} setPage={setPage} title={"wwoowow"} />
+      )}
 
-      <Main isAuth={isAuth} setIsAuth={setIsAuth} />
+      <Main page={page} setPage={setPage} />
 
-      {isAuth && <Footer prog=" Cryo" year="2026" />}
+      {page !== "authPage" && <Footer prog=" Cryo" year="2026" />}
     </div>
   );
 }
