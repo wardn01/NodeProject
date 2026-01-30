@@ -13,14 +13,25 @@ function Auth({ setPage }) {
     nickname: "",
     email: "",
     password: "",
+    confirmPassword: "",
   });
+  const [errorMessage, setErrorMessage] = useState("");
 
+  // Handle input changes
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Handle form submission for login and registration
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrorMessage("");
+
+    if (!isLogin && formData.password !== formData.confirmPassword) {
+      setErrorMessage("Passwords do not match!");
+      return;
+    }
+
     const url = isLogin
       ? "http://localhost:8000/user/login"
       : "http://localhost:8000/user/register";
@@ -34,24 +45,33 @@ function Auth({ setPage }) {
         setIsLogin(true);
       }
     } catch (error) {
-      console.error("Error during authentication:", error);
+      if (error?.response?.data?.message) {
+        setErrorMessage(error.response.data.message);
+      } else {
+        console.error("Error during authentication:", error);
+      }
     }
+  };
+  // Toggle between login and registration forms
+  const handleToggle = () => {
+    setIsLogin(!isLogin);
+    setErrorMessage("");
   };
 
   return (
     <div className={styles.authContainer}>
       <form className={styles.authForm} onSubmit={handleSubmit}>
-        <h2 className={styles.authHeading}>
-          {isLogin ? "Login" : "Create Account"}
-        </h2>
-
+        <p className={styles.authHeading}>
+          {isLogin ? "LOGIN" : "CREATE ACCOUNT"}
+        </p>
         {!isLogin && (
           <input
             className={styles.authInput}
             type="text"
             name="username"
-            placeholder="Username"
+            placeholder="User Name"
             onChange={handleChange}
+            minLength={2}
             required
           />
         )}
@@ -60,12 +80,11 @@ function Auth({ setPage }) {
             className={styles.authInput}
             type="text"
             name="nickname"
-            placeholder="Nickname"
+            placeholder="Nick Name"
             onChange={handleChange}
             required
           />
         )}
-
         <input
           className={styles.authInput}
           type={(!isLogin && "email") || "text"}
@@ -80,14 +99,29 @@ function Auth({ setPage }) {
           name="password"
           placeholder="Password"
           onChange={handleChange}
+          minLength={3}
+          maxLength={8}
           required
         />
+        {!isLogin && (
+          <input
+            className={styles.authInput}
+            type="password"
+            name="confirmPassword"
+            placeholder="Confirm Password"
+            onChange={handleChange}
+            minLength={3}
+            maxLength={8}
+            required
+          />
+        )}
+        {errorMessage && <p className={styles.errorMessage}>{errorMessage}</p>}
 
         <button type="submit" className={styles.authSubmitButton}>
-          {isLogin ? "Login" : "Sign Up"}
+          {isLogin ? "LOGIN" : "SIGN UP"}
         </button>
 
-        <p onClick={() => setIsLogin(!isLogin)} className={styles.authToggle}>
+        <p onClick={handleToggle} className={styles.authToggle}>
           {isLogin
             ? "Don't have an account? Register"
             : "Already have an account? Login"}
@@ -97,3 +131,4 @@ function Auth({ setPage }) {
   );
 }
 export default Auth;
+

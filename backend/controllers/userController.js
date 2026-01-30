@@ -1,33 +1,68 @@
 const db = require("../dbSingleton").getConnection(); // db
 const bcrypt = require("bcrypt"); // password
 
+// ----- User Registration ----- //
 const register = (req, res) => {
   const { username, nickname, email, password } = req.body;
   if (!username || !nickname || !email || !password) {
     return res.status(400).json({ message: "Missing data" });
   }
 
-  bcrypt.genSalt(10, (err, salt) => {
-    if (err) return;
+  // Validate username (only letters)
+  const checkUsername = /^[A-Za-z]+$/.test(username);
+  if (!checkUsername) {
+    return res
+      .status(400)
+      .json({ message: "Username must contain only letters." });
+  }
 
-    bcrypt.hash(password, salt, (err, hashedPassword) => {
+  // Validate password ( at least one letter and one number)
+  const checkPassword = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]$/.test(password);
+  if (!checkPassword) {
+    return res.status(400).json({
+      message: "Password must contain at least one letter and one number.",
+    });
+  }
+
+  // Check if username or email already exists
+  const checkUser = "SELECT * FROM users WHERE username = ? OR email = ?";
+  db.query(checkUser, [username, email], (err, results) => {
+    if (err) {
+      console.error("Error in database:", err);
+      return res.status(500).send({ message: "Error registering!!" });
+    }
+    if (results.length > 0) {
+      console.log("Username or email already exists.");
+      return res
+        .status(400)
+        .send({ message: "Username or email already exists." });
+    }
+    createUser();
+  });
+
+  // Create new user
+  const createUser = () =>
+    bcrypt.genSalt(10, (err, salt) => {
       if (err) return;
 
-      const query =
-        "INSERT INTO users (username, nickname, email, password_hash) VALUES (?, ?, ?, ?)";
-      db.query(
-        query,
-        [username, nickname, email, hashedPassword],
-        (err, result) => {
-          if (err) {
-            console.error("Error in database:", err);
-            return res.status(500).send({ message: "Error registering!!" });
-          }
-          res.status(201).send({ message: "User registered!" });
-        },
-      );
+      bcrypt.hash(password, salt, (err, hashedPassword) => {
+        if (err) return;
+
+        const query =
+          "INSERT INTO users (username, nickname, email, password_hash) VALUES (?, ?, ?, ?)";
+        db.query(
+          query,
+          [username, nickname, email, hashedPassword],
+          (err, result) => {
+            if (err) {
+              console.error("Error in database:", err);
+              return res.status(500).send({ message: "Error registering!!" });
+            }
+            res.status(201).send({ message: "User registered!" });
+          },
+        );
+      });
     });
-  });
 };
 
 const login = (req, res) => {
