@@ -61,7 +61,7 @@ function Auth({ setPage }) {
   return (
     <div className={styles.authContainer}>
       <form className={styles.authForm} onSubmit={handleSubmit}>
-        <p className={styles.authHeading}>
+        <p className={styles.authTitle}>
           {isLogin ? "LOGIN" : "CREATE ACCOUNT"}
         </p>
         {!isLogin && (
@@ -131,4 +131,3 @@ function Auth({ setPage }) {
   );
 }
 export default Auth;
-

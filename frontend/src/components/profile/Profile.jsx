@@ -38,42 +38,43 @@ const Profile = ({ setPage }) => {
   return (
     <div className={styles.profileContainer}>
       <div className={styles.profileHeader}>
-        <h2 className={styles.profileTitle}>User Profile</h2>
+        <p className={styles.profileTitle}>Profile</p>
+        <div className={styles.avatar}>
+          {profileData?.username?.charAt(0).toUpperCase()}
+        </div>
       </div>
 
-      {profileData ? (
-        <div className={styles.profileCard}>
-          <div className={styles.avatar}>
-            {profileData.username?.charAt(0).toUpperCase()}
-          </div>
-
-          <div className={styles.infoGroup}>
-            <label>Username</label>
-            <p>{profileData.username}</p>
-          </div>
-
-          <div className={styles.infoGroup}>
-            <label>Nickname</label>
-            <p>{profileData.nickname}</p>
-          </div>
-
-          <div className={styles.infoGroup}>
-            <label>Email Address</label>
-            <p>{profileData.email}</p>
-          </div>
-
-          <div className={styles.infoGroup}>
-            <label>Password</label>
-            <p>********</p>
-          </div>
-
-          <button className={styles.logoutButton} onClick={handleLogout}>
-            Logout from Session
-          </button>
+      <div className={styles.profileCard}>
+        <div className={styles.infoGroup}>
+          <p className={styles.infoLabel}>Username</p>
+          <p className={styles.infoValue}>
+            {profileData?.username || "Loading..."}
+          </p>
         </div>
-      ) : (
-        <p className={styles.loading}>Loading profile details...</p>
-      )}
+
+        <div className={styles.infoGroup}>
+          <p className={styles.infoLabel}>Nickname</p>
+          <p className={styles.infoValue}>
+            {profileData?.nickname || "Loading..."}
+          </p>
+        </div>
+
+        <div className={styles.infoGroup}>
+          <p className={styles.infoLabel}>Email Address</p>
+          <p className={styles.infoValue}>
+            {profileData?.email || "Loading..."}
+          </p>
+        </div>
+
+        <div className={styles.infoGroup}>
+          <p className={styles.infoLabel}>Password</p>
+          <p className={styles.infoValue}>********</p>
+        </div>
+
+        <button className={styles.logoutButton} onClick={handleLogout}>
+          LOGOUT
+        </button>
+      </div>
     </div>
   );
 };

@@ -102,6 +102,11 @@ const login = (req, res) => {
   });
 };
 
+const update = (req, res) => {
+  const userId = req.session.user.id;
+  const updateData = req.body;
+};
+
 const profile = (req, res) => {
   res.send({ user: req.session.user });
 };
