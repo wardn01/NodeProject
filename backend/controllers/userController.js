@@ -17,7 +17,9 @@ const register = (req, res) => {
   }
 
   // Validate password ( at least one letter and one number)
-  const checkPassword = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]$/.test(password);
+  const checkPassword = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{3,8}$/.test(
+    password,
+  );
   if (!checkPassword) {
     return res.status(400).json({
       message: "Password must contain at least one letter and one number.",
@@ -104,7 +106,35 @@ const login = (req, res) => {
 
 const update = (req, res) => {
   const userId = req.session.user.id;
-  const updateData = req.body;
+  const { nickname, password } = req.body;
+
+  if (!nickname && !password) {
+    return res.status(400).json({ message: "No data to update" });
+  }
+  const updates = [];
+  const params = [];
+  if (nickname) {
+    updates.push("nickname = ?");
+    params.push(nickname);
+  }
+  if (password) {
+    const salt = bcrypt.genSaltSync(10);
+    const hashedPassword = bcrypt.hashSync(password, salt);
+    updates.push("password_hash = ?");
+    params.push(hashedPassword);
+  }
+  params.push(userId);
+
+  const query = `UPDATE users SET ${updates.join(", ")} WHERE id = ?`;
+  db.query(query, params, (err, result) => {
+    if (err) {
+      console.error("Error in database:", err);
+      return res.status(500).send({ message: "Error updating profile." });
+    }
+    res.send({ message: "Profile updated successfully." });
+  }
+  );;
+
 };
 
 const profile = (req, res) => {

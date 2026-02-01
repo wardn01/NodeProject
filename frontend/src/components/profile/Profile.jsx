@@ -4,6 +4,7 @@ import axios from "axios";
 
 const Profile = ({ setPage }) => {
   const [profileData, setProfileData] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     const getProfileData = async () => {
@@ -35,46 +36,117 @@ const Profile = ({ setPage }) => {
     }
   };
 
+  const handleUpdateProfile = async () => {
+    try {
+      await axios.post(
+        "http://localhost:8000/user/update",
+        {
+          nickname: profileData.nickname,
+          password: profileData.password,
+        },
+        { withCredentials: true },
+      );
+    } catch (error) {
+      console.error("Error updating profile:", error);
+    }
+  };
+
+  const handleBtnEditClick = () => {
+    if (isEditing) {
+      handleUpdateProfile();
+    }
+    setIsEditing(!isEditing);
+  };
+
+  const handleChange = (e) => {
+    setProfileData({ ...profileData, [e.target.name]: e.target.value });
+  };
+
   return (
     <div className={styles.profileContainer}>
       <div className={styles.profileHeader}>
         <p className={styles.profileTitle}>Profile</p>
         <div className={styles.avatar}>
-          {profileData?.username?.charAt(0).toUpperCase()}
+          {profileData?.nickname?.charAt(0).toUpperCase()}
         </div>
       </div>
 
-      <div className={styles.profileCard}>
-        <div className={styles.infoGroup}>
-          <p className={styles.infoLabel}>Username</p>
-          <p className={styles.infoValue}>
-            {profileData?.username || "Loading..."}
-          </p>
+      <div className={styles.infoRow}>
+        <div className={styles.profileCard}>
+          <div className={styles.infoGroup}>
+            <p className={styles.infoLabel}>Username</p>
+            <p className={styles.infoValue}>
+              {profileData?.username || "Loading..."}
+            </p>
+          </div>
+          <div className={styles.infoGroup}>
+            <p className={styles.infoLabel}>Email Address</p>
+            <p className={styles.infoValue}>
+              {profileData?.email || "Loading..."}
+            </p>
+          </div>
         </div>
+      </div>
 
-        <div className={styles.infoGroup}>
+      <div className={styles.infoGroup}>
+        <div className={styles.editProfile}>
           <p className={styles.infoLabel}>Nickname</p>
-          <p className={styles.infoValue}>
-            {profileData?.nickname || "Loading..."}
-          </p>
+          {isEditing ? (
+            <p className={styles.editButton} onClick={handleBtnEditClick}>
+              save
+            </p>
+          ) : (
+            <p className={styles.editButton} onClick={handleBtnEditClick}>
+              ✏️
+            </p>
+          )}
         </div>
-
-        <div className={styles.infoGroup}>
-          <p className={styles.infoLabel}>Email Address</p>
-          <p className={styles.infoValue}>
-            {profileData?.email || "Loading..."}
-          </p>
-        </div>
-
-        <div className={styles.infoGroup}>
-          <p className={styles.infoLabel}>Password</p>
-          <p className={styles.infoValue}>********</p>
-        </div>
-
-        <button className={styles.logoutButton} onClick={handleLogout}>
-          LOGOUT
-        </button>
+        <p className={styles.infoValue}>
+          {isEditing ? (
+            <input
+              className={styles.editInput}
+              type="text"
+              name="nickname"
+              value={profileData?.nickname || ""}
+              onChange={handleChange}
+            />
+          ) : (
+            profileData?.nickname || "Loading..."
+          )}
+        </p>
       </div>
+      <div className={styles.infoGroup}>
+        <div className={styles.editProfile}>
+          <p className={styles.infoLabel}>Password</p>
+          {isEditing ? (
+            <p className={styles.editButton} onClick={handleBtnEditClick}>
+              save
+            </p>
+          ) : (
+            <p className={styles.editButton} onClick={handleBtnEditClick}>
+              ✏️
+            </p>
+          )}
+        </div>
+
+        <p className={styles.infoValue}>
+          {isEditing ? (
+            <input
+              className={styles.editInput}
+              type="password"
+              name="password"
+              value={profileData?.password || ""}
+              onChange={handleChange}
+            />
+          ) : (
+            "********"
+          )}
+        </p>
+      </div>
+
+      <button className={styles.logoutButton} onClick={handleLogout}>
+        LOGOUT
+      </button>
     </div>
   );
 };
