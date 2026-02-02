@@ -2,9 +2,9 @@
   max-width: 920px;
   width: 100%;
   margin: 30px auto;
-  padding: 20px;
+  padding: 30px;
   background: white;
-  border-radius: 10px;
+  border-radius: 12px;
   box-shadow: 0 12px 30px rgba(11, 20, 26, 0.08);
   border: 1px solid rgba(18, 30, 45, 0.04);
 }
@@ -14,31 +14,28 @@
   align-items: center;
   justify-content: space-between;
   margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eee;
 }
 
 .profileTitle {
-  font-family: var(--font-family-header);
-  font-size: var(--font-size-xxlarge);
-  color: var(--color-deep-blue);
-  font-weight: bold;
+  font-size: 2rem;
+  color: #1a1a2e;
+  font-weight: 700;
 }
 
 .avatar {
-  width: 60px;
-  height: 60px;
+  width: 70px;
+  height: 70px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: bold;
-  font-size: 2.2rem;
+  font-size: 2.5rem;
   color: white;
-  background: linear-gradient(
-    to right,
-    var(--color-slate-blue),
-    var(--color-deep-blue)
-  );
-  box-shadow: 0 0 10px rgba(81, 229, 255, 0.3);
+  background: linear-gradient(135deg, #0f3460, #e94560);
+  box-shadow: 0 5px 15px rgba(233, 69, 96, 0.3);
   user-select: none;
 }
 
@@ -50,29 +47,37 @@
 .profileCard {
   flex: 1;
   display: flex;
-  padding: 1px 10px;
+  background-color: #f8f9fa;
   border-radius: 10px;
-  border-bottom: 1px solid rgba(50, 74, 95, 1);
-  border-top: 1px solid rgba(50, 74, 95, 1);
+  padding: 10px;
+  border: 1px solid #e9ecef;
 }
 
 .infoGroup {
   display: flex;
   flex-direction: column;
   flex: 1;
-  gap: 5px;
-  padding: 10px 20px;
+  gap: 8px;
+  padding: 15px 20px;
+}
+
+.profileCard .infoGroup:first-child {
+  border-right: 1px solid #dee2e6;
 }
 
 .infoLabel {
-  font-size: var(--font-size-small);
-  color: #333333;
-  font-weight: bold;
+  font-size: 0.85rem;
+  color: #6c757d;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .infoValue {
-  font-size: var(--font-size-medium);
-  color: var(--color-dark-navy);
+  font-size: 1.1rem;
+  color: #212529;
+  font-weight: 500;
+  min-height: 28px;
 }
 
 .editProfile {
@@ -82,33 +87,85 @@
   width: 100%;
 }
 
+.editButtons {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
 .editButton {
   cursor: pointer;
-  font-size: var(--font-size-medium);
+  font-size: 1.2rem;
   user-select: none;
+  transition: transform 0.2s;
+  padding: 5px;
 }
 
 .editButton:hover {
-  transform: scale(1.1);
+  transform: scale(1.2);
+}
+
+.editInput {
+  width: 100%;
+  padding: 10px 12px;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.3s ease;
+  background-color: #fff;
+  color: #333;
+}
+
+.editInput:focus {
+  border-color: #e94560;
+  box-shadow: 0 0 0 3px rgba(233, 69, 96, 0.1);
+}
+
+.successMessage {
+  color: #155724;
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+  padding: 12px;
+  border-radius: 8px;
+  text-align: center;
+  margin-top: 20px;
+  font-weight: 500;
+}
+
+.errorMessage {
+  color: #721c24;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  padding: 12px;
+  border-radius: 8px;
+  text-align: center;
+  margin-top: 20px;
+  font-weight: 500;
 }
 
 .logoutButton {
   width: 100%;
-  margin-top: 20px;
-  padding: 10px 15px;
-  font-family: var(--font-family-button);
-  font-size: var(--font-size-medlarge);
+  margin-top: 30px;
+  padding: 12px 15px;
+  font-size: 1.1rem;
+  font-weight: bold;
   border-radius: 10px;
   border: none;
   cursor: pointer;
-  background: linear-gradient(to right, #e52d27, #b31217);
+  background: linear-gradient(to right, #ff416c, #ff4b2b);
   color: white;
-  box-shadow: 0 12px 30px rgba(27, 42, 65, 0.12);
+  box-shadow: 0 4px 15px rgba(255, 75, 43, 0.3);
   transition: all 0.3s ease;
+  letter-spacing: 1px;
 }
 
 .logoutButton:hover {
-  background: linear-gradient(to left, #e52d27, #b31217);
+  background: linear-gradient(to left, #ff416c, #ff4b2b);
   transform: translateY(-2px);
-  box-shadow: 0 2px 0 rgba(255, 0, 0, 0.2);
+  box-shadow: 0 6px 20px rgba(255, 75, 43, 0.4);
+}
+
+.logoutButton:active {
+  transform: translateY(0);
 }

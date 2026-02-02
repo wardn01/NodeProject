@@ -4,25 +4,31 @@ import axios from "axios";
 
 const Profile = ({ setPage }) => {
   const [profileData, setProfileData] = useState(null);
-  const [isEditing, setIsEditing] = useState(false);
+  const [profileDataToEdit, setProfileDataToEdit] = useState({
+    nickname: "",
+    password: "",
+  });
+  const [isEditing, setIsEditing] = useState("nothing");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
+  // Fetch user profile data on component mount
   useEffect(() => {
     const getProfileData = async () => {
       try {
-        const profileData = await axios.get(
-          "http://localhost:8000/user/profile",
-          {
-            withCredentials: true,
-          },
-        );
-        setProfileData(profileData.data.user);
+        const res = await axios.get("http://localhost:8000/user/profile", {
+          withCredentials: true,
+        });
+        setProfileData(res.data.user);
       } catch (error) {
         console.error("Error fetching profile data:", error);
+        setErrorMessage("Failed to fetch profile data.");
       }
     };
     getProfileData();
   }, []);
 
+  // Handle user logout
   const handleLogout = async () => {
     try {
       await axios.post(
@@ -33,33 +39,78 @@ const Profile = ({ setPage }) => {
       setPage("authPage");
     } catch (error) {
       console.error("Error during logout:", error);
+      setErrorMessage("Failed to logout.");
     }
   };
 
+  // Handle profile update
   const handleUpdateProfile = async () => {
     try {
       await axios.post(
         "http://localhost:8000/user/update",
         {
-          nickname: profileData.nickname,
-          password: profileData.password,
+          nickname:
+            isEditing === "nickname" ? profileDataToEdit.nickname : null,
+          password:
+            isEditing === "password" ? profileDataToEdit.password : null,
         },
         { withCredentials: true },
       );
+
+      setSuccessMessage("Profile updated successfully.");
+      setErrorMessage("");
+
+      if (isEditing === "nickname") {
+        setProfileData((prev) => ({
+          ...prev,
+          nickname: profileDataToEdit.nickname,
+        }));
+      }
+      setIsEditing("nothing");
     } catch (error) {
-      console.error("Error updating profile:", error);
+      if (error?.response?.data?.message) {
+        setErrorMessage(error.response.data.message);
+      } else {
+        setErrorMessage("Failed to update profile.");
+      }
+      setSuccessMessage("");
     }
   };
 
-  const handleBtnEditClick = () => {
-    if (isEditing) {
-      handleUpdateProfile();
+  // Handle edit button click
+  const handleBtnEditClick = (editMode) => {
+    if (editMode !== "nothing") {
+      setProfileDataToEdit({
+        nickname: profileData.nickname,
+        password: "",
+      });
     }
-    setIsEditing(!isEditing);
+
+    if (isEditing === editMode) {
+    } else {
+      setIsEditing(editMode);
+      setErrorMessage("");
+      setSuccessMessage("");
+    }
   };
 
+  // Handle cancel edit button click
+  const handlebtnCancelEditClick = () => {
+    setIsEditing("nothing");
+    setErrorMessage("");
+    setSuccessMessage("");
+    setProfileDataToEdit({
+      nickname: profileData.nickname,
+      password: "",
+    });
+  };
+
+  // Handle input changes for profile editing
   const handleChange = (e) => {
-    setProfileData({ ...profileData, [e.target.name]: e.target.value });
+    setProfileDataToEdit({
+      ...profileDataToEdit,
+      [e.target.name]: e.target.value,
+    });
   };
 
   return (
@@ -87,27 +138,39 @@ const Profile = ({ setPage }) => {
           </div>
         </div>
       </div>
-
       <div className={styles.infoGroup}>
         <div className={styles.editProfile}>
           <p className={styles.infoLabel}>Nickname</p>
-          {isEditing ? (
-            <p className={styles.editButton} onClick={handleBtnEditClick}>
-              save
-            </p>
+          {isEditing === "nickname" ? (
+            <div className={styles.editButtons}>
+              <p className={styles.editButton} onClick={handleUpdateProfile}>
+                ✔️
+              </p>
+              <p
+                className={styles.editButton}
+                onClick={handlebtnCancelEditClick}
+              >
+                ✖️
+              </p>
+            </div>
           ) : (
-            <p className={styles.editButton} onClick={handleBtnEditClick}>
+            <p
+              className={styles.editButton}
+              onClick={() => handleBtnEditClick("nickname")}
+            >
               ✏️
             </p>
           )}
         </div>
+
         <p className={styles.infoValue}>
-          {isEditing ? (
+          {isEditing === "nickname" ? (
             <input
               className={styles.editInput}
               type="text"
               name="nickname"
-              value={profileData?.nickname || ""}
+              placeholder="New Nick Name"
+              value={profileDataToEdit.nickname}
               onChange={handleChange}
             />
           ) : (
@@ -115,27 +178,40 @@ const Profile = ({ setPage }) => {
           )}
         </p>
       </div>
+
       <div className={styles.infoGroup}>
         <div className={styles.editProfile}>
           <p className={styles.infoLabel}>Password</p>
-          {isEditing ? (
-            <p className={styles.editButton} onClick={handleBtnEditClick}>
-              save
-            </p>
+          {isEditing === "password" ? (
+            <div className={styles.editButtons}>
+              <p className={styles.editButton} onClick={handleUpdateProfile}>
+                ✔️
+              </p>
+              <p
+                className={styles.editButton}
+                onClick={handlebtnCancelEditClick}
+              >
+                ✖️
+              </p>
+            </div>
           ) : (
-            <p className={styles.editButton} onClick={handleBtnEditClick}>
+            <p
+              className={styles.editButton}
+              onClick={() => handleBtnEditClick("password")}
+            >
               ✏️
             </p>
           )}
         </div>
 
         <p className={styles.infoValue}>
-          {isEditing ? (
+          {isEditing === "password" ? (
             <input
               className={styles.editInput}
               type="password"
               name="password"
-              value={profileData?.password || ""}
+              placeholder="New Password"
+              value={profileDataToEdit.password}
               onChange={handleChange}
             />
           ) : (
@@ -143,6 +219,11 @@ const Profile = ({ setPage }) => {
           )}
         </p>
       </div>
+
+      {successMessage && (
+        <p className={styles.successMessage}>{successMessage}</p>
+      )}
+      {errorMessage && <p className={styles.errorMessage}>{errorMessage}</p>}
 
       <button className={styles.logoutButton} onClick={handleLogout}>
         LOGOUT

@@ -71,7 +71,6 @@ function Auth({ setPage }) {
             name="username"
             placeholder="User Name"
             onChange={handleChange}
-            minLength={2}
             required
           />
         )}
@@ -99,8 +98,6 @@ function Auth({ setPage }) {
           name="password"
           placeholder="Password"
           onChange={handleChange}
-          minLength={3}
-          maxLength={8}
           required
         />
         {!isLogin && (
@@ -110,8 +107,6 @@ function Auth({ setPage }) {
             name="confirmPassword"
             placeholder="Confirm Password"
             onChange={handleChange}
-            minLength={3}
-            maxLength={8}
             required
           />
         )}

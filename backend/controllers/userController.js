@@ -1,31 +1,12 @@
 const db = require("../dbSingleton").getConnection(); // db
 const bcrypt = require("bcrypt"); // password
 
-// ----- User Registration ----- //
+// -------------------- User Registration -------------------- //
 const register = (req, res) => {
   const { username, nickname, email, password } = req.body;
   if (!username || !nickname || !email || !password) {
     return res.status(400).json({ message: "Missing data" });
   }
-
-  // Validate username (only letters)
-  const checkUsername = /^[A-Za-z]+$/.test(username);
-  if (!checkUsername) {
-    return res
-      .status(400)
-      .json({ message: "Username must contain only letters." });
-  }
-
-  // Validate password ( at least one letter and one number)
-  const checkPassword = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{3,8}$/.test(
-    password,
-  );
-  if (!checkPassword) {
-    return res.status(400).json({
-      message: "Password must contain at least one letter and one number.",
-    });
-  }
-
   // Check if username or email already exists
   const checkUser = "SELECT * FROM users WHERE username = ? OR email = ?";
   db.query(checkUser, [username, email], (err, results) => {
@@ -41,7 +22,6 @@ const register = (req, res) => {
     }
     createUser();
   });
-
   // Create new user
   const createUser = () =>
     bcrypt.genSalt(10, (err, salt) => {
@@ -67,20 +47,15 @@ const register = (req, res) => {
     });
 };
 
+// -------------------- User Login -------------------- //
 const login = (req, res) => {
   const { username, password } = req.body;
-
-  console.log(username);
-
-  if (!username || !password) {
-    return res.status(400).json({ message: "Missing data" });
-  }
   const query = "SELECT * FROM users WHERE username = ? OR email = ?";
   db.query(query, [username, username], (err, results) => {
     if (err) return res.status(500).send({ message: "Error on server." });
 
     if (results.length === 0) {
-      return res.status(400).send({ message: "Invalid username or password." });
+      return res.status(400).send({ message: "User dose not exist." });
     }
 
     const user = results[0];
@@ -93,61 +68,83 @@ const login = (req, res) => {
         req.session.user = user;
         return res.send({
           message: "You have successfully logged in.",
-          user: req.session.user,
+          user: {
+            id: user.id,
+            username: user.username,
+            nickname: user.nickname,
+            email: user.email,
+          },
         });
       } else {
-        return res
-          .status(400)
-          .send({ message: "Invalid username/email or password." });
+        return res.status(400).send({ message: "Invalid password." });
       }
     });
   });
 };
 
-const update = (req, res) => {
+// -------------------- Update User Profile -------------------- //
+// -------------------- Update User Profile -------------------- //
+const update = async (req, res) => {
   const userId = req.session.user.id;
   const { nickname, password } = req.body;
 
-  if (!nickname && !password) {
-    return res.status(400).json({ message: "No data to update" });
-  }
-  const updates = [];
-  const params = [];
-  if (nickname) {
-    updates.push("nickname = ?");
-    params.push(nickname);
-  }
-  if (password) {
-    const salt = bcrypt.genSaltSync(10);
-    const hashedPassword = bcrypt.hashSync(password, salt);
-    updates.push("password_hash = ?");
-    params.push(hashedPassword);
-  }
-  params.push(userId);
+  try {
+    const updates = [];
+    const params = [];
 
-  const query = `UPDATE users SET ${updates.join(", ")} WHERE id = ?`;
-  db.query(query, params, (err, result) => {
-    if (err) {
-      console.error("Error in database:", err);
-      return res.status(500).send({ message: "Error updating profile." });
+    if (nickname) {
+      updates.push("nickname = ?");
+      params.push(nickname);
+      req.session.user.nickname = nickname;
     }
-    res.send({ message: "Profile updated successfully." });
+
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      updates.push("password_hash = ?");
+      params.push(hashedPassword);
+    }
+
+    if (updates.length === 0) {
+      return res.status(400).send({ message: "No data to update." });
+    }
+
+    params.push(userId);
+
+    const query = `UPDATE users SET ${updates.join(", ")} WHERE id = ?`;
+    db.query(query, params, (err) => {
+      if (err) {
+        console.error("DB Error:", err);
+        return res.status(500).send({ message: "Error updating profile." });
+      }
+
+      res.send({ message: "Profile updated successfully." });
+    });
+  } catch (err) {
+    console.error("Update Error:", err);
+    res.status(500).send({ message: "Error updating profile." });
   }
-  );;
-
 };
 
+// -------------------- Get User Profile -------------------- //
 const profile = (req, res) => {
-  res.send({ user: req.session.user });
+  res.send({
+    user: {
+      id: req.session.user.id,
+      username: req.session.user.username,
+      nickname: req.session.user.nickname,
+      email: req.session.user.email,
+    },
+  });
 };
 
+// -------------------- User Logout -------------------- //
 const logout = (req, res) => {
   req.session.destroy((err) => {
     if (err) {
       return res.status(500).send({ message: "Error terminating session." });
     }
-    res.send({ message: "Successfully logged out ." });
+    res.send({ message: "Successfully logged out." });
   });
 };
 
-module.exports = { register, login, profile, logout };
+module.exports = { register, login, update, profile, logout };
