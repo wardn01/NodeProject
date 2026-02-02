@@ -31,7 +31,7 @@ const checkPassword = (req, res, next) => {
   next();
 };
 
-//
+// Validate nickname ( at least 2 characters)
 const checkNickname = (req, res, next) => {
   if (!req.body.nickname) {
     return next();

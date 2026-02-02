@@ -1,6 +1,8 @@
 import axios from "axios";
 import styles from "./auth.module.css";
 import { useState } from "react";
+import { AiOutlineEye } from "react-icons/ai";
+import { AiOutlineEyeInvisible } from "react-icons/ai";
 
 /**
  * auth component
@@ -16,6 +18,8 @@ function Auth({ setPage }) {
     confirmPassword: "",
   });
   const [errorMessage, setErrorMessage] = useState("");
+  const [eyeInvisible, setEyeInvisible] = useState(true);
+  const [eyeInvisibleConfirm, setEyeInvisibleConfirm] = useState(true);
 
   // Handle input changes
   const handleChange = (e) => {
@@ -92,23 +96,43 @@ function Auth({ setPage }) {
           onChange={handleChange}
           required
         />
-        <input
-          className={styles.authInput}
-          type="password"
-          name="password"
-          placeholder="Password"
-          onChange={handleChange}
-          required
-        />
-        {!isLogin && (
+        <div className={styles.passwordInputContainer}>
           <input
             className={styles.authInput}
-            type="password"
-            name="confirmPassword"
-            placeholder="Confirm Password"
+            type={eyeInvisible ? "password" : "text"}
+            name="password"
+            placeholder="Password"
             onChange={handleChange}
             required
           />
+          <span
+            className={styles.passwordToggleIcon}
+            onClick={() => setEyeInvisible(!eyeInvisible)}
+          >
+            {eyeInvisible ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
+          </span>
+        </div>
+        {!isLogin && (
+          <div className={styles.passwordInputContainer}>
+            <input
+              className={styles.authInput}
+              type={eyeInvisibleConfirm ? "password" : "text"}
+              name="confirmPassword"
+              placeholder="Confirm Password"
+              onChange={handleChange}
+              required
+            />
+            <span
+              className={styles.passwordToggleIcon}
+              onClick={() => setEyeInvisibleConfirm(!eyeInvisibleConfirm)}
+            >
+              {eyeInvisibleConfirm ? (
+                <AiOutlineEyeInvisible />
+              ) : (
+                <AiOutlineEye />
+              )}
+            </span>
+          </div>
         )}
         {errorMessage && <p className={styles.errorMessage}>{errorMessage}</p>}
 

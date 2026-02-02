@@ -4,10 +4,11 @@ const bcrypt = require("bcrypt"); // password
 // -------------------- User Registration -------------------- //
 const register = (req, res) => {
   const { username, nickname, email, password } = req.body;
+
   if (!username || !nickname || !email || !password) {
     return res.status(400).json({ message: "Missing data" });
   }
-  // Check if username or email already exists
+
   const checkUser = "SELECT * FROM users WHERE username = ? OR email = ?";
   db.query(checkUser, [username, email], (err, results) => {
     if (err) {
@@ -22,7 +23,7 @@ const register = (req, res) => {
     }
     createUser();
   });
-  // Create new user
+
   const createUser = () =>
     bcrypt.genSalt(10, (err, salt) => {
       if (err) return;
@@ -82,7 +83,6 @@ const login = (req, res) => {
   });
 };
 
-// -------------------- Update User Profile -------------------- //
 // -------------------- Update User Profile -------------------- //
 const update = async (req, res) => {
   const userId = req.session.user.id;
@@ -147,4 +147,5 @@ const logout = (req, res) => {
   });
 };
 
+// -------------------- Export Controllers -------------------- //
 module.exports = { register, login, update, profile, logout };
