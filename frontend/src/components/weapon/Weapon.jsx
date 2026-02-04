@@ -36,24 +36,26 @@ const Weapon = ({ weaponId, onSelect }) => {
 
   return (
     <div className={styles.weaponContainer}>
-      <button
-        className={styles.selectButton}
+      <div
+        className={`${styles.weaponSlot} ${weaponData ? styles.equipped : styles.empty}`}
         onClick={() => setShowWeaponList(true)}
       >
-        SELECT A WEAPON
-      </button>
-      {weaponData ? (
-        <div className={styles.weaponCard}>
-          <h2>{weaponData.name}</h2>
-          <div className={styles.stats}>
-            <p> Type: {weaponData.type}</p>
-            <p>⚔️ Attack: {weaponData.base_damage}</p>
-            <p>Description: {weaponData.description}</p>
+        {weaponData ? (
+          <div className={styles.slotContent}>
+            <span className={styles.icon}>⚔️</span>
+            <div className={styles.info}>
+              <span className={styles.name}>{weaponData.name}</span>
+              <span className={styles.stat}>+{weaponData.base_damage} ATK</span>
+            </div>
           </div>
-        </div>
-      ) : (
-        <p className={styles.placeholderText}>No weapon selected yet.</p>
-      )}
+        ) : (
+          <div className={styles.slotContent}>
+            <span className={styles.plusIcon}>+</span>
+            <span className={styles.placeholder}>Equip Weapon</span>
+          </div>
+        )}
+      </div>
+
       {showWeaponList && (
         <div className={styles.popupOverlay}>
           <Weapons

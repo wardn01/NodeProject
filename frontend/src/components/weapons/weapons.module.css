@@ -1,0 +1,108 @@
+.weaponsContainer {
+  background-color: #1a1a2e;
+  width: 90%;
+  max-width: 500px;
+  max-height: 80vh;
+  border-radius: 15px;
+  border: 2px solid #e94560;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  position: relative;
+  padding-bottom: 20px;
+}
+
+.weaponsContainer::-webkit-scrollbar {
+  width: 8px;
+}
+
+.weaponsContainer::-webkit-scrollbar-track {
+  background: #0f3460;
+}
+
+.weaponsContainer::-webkit-scrollbar-thumb {
+  background: #e94560;
+  border-radius: 4px;
+}
+
+.weaponsHeader {
+  background-color: #0f3460;
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-bottom: 2px solid #1a1a2e;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.weaponsHeaderTitle {
+  color: white;
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.weaponsCloseButton {
+  color: #ff4757;
+  font-weight: bold;
+  font-size: 1.2rem;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.weaponsCloseButton:hover {
+  background: #ff4757;
+  color: white;
+  transform: rotate(90deg);
+}
+
+.weaponCard {
+  background: linear-gradient(145deg, #16213e, #1f2b4d);
+  margin: 10px 20px;
+  padding: 15px;
+  border-radius: 10px;
+  border: 1px solid #333;
+  cursor: pointer;
+  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.weaponCard:hover {
+  transform: translateX(5px);
+  border-color: #e94560;
+  box-shadow: 0 5px 15px rgba(233, 69, 96, 0.2);
+  background: #232f55;
+}
+
+.weaponName {
+  color: #e94560;
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 0;
+  text-transform: capitalize;
+}
+
+.weaponDetail {
+  color: #ccc;
+  font-size: 0.9rem;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}

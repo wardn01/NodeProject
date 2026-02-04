@@ -1,0 +1,60 @@
+.createBuildContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.createBuildButton {
+  background: linear-gradient(135deg, #e94560, #c0394d);
+  color: white;
+  padding: 15px 40px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(233, 69, 96, 0.3);
+  transition: transform 0.2s, box-shadow 0.2s, background 0.3s;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  width: 100%;
+  max-width: 400px;
+}
+
+.createBuildButton:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(233, 69, 96, 0.5);
+  background: linear-gradient(135deg, #ff5e78, #d6455b);
+}
+
+.createBuildButton:active {
+  transform: translateY(0);
+}
+
+.errorMessage {
+  color: #ff4757;
+  background-color: rgba(255, 71, 87, 0.1);
+  padding: 10px;
+  border-radius: 5px;
+  margin-top: 10px;
+  font-size: 0.9rem;
+  border: 1px solid rgba(255, 71, 87, 0.3);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.successMessage {
+  color: #2ecc71;
+  background-color: rgba(46, 204, 113, 0.1);
+  padding: 10px;
+  border-radius: 5px;
+  margin-top: 10px;
+  font-size: 0.9rem;
+  border: 1px solid rgba(46, 204, 113, 0.3);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}

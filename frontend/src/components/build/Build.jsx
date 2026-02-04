@@ -60,77 +60,83 @@ const Build = ({ buildData, refreshBuilds }) => {
       console.error("Error deleting build:", error);
     }
   };
-
   return (
     <div className={styles.buildContainer}>
       <div className={styles.header}>
         <h2 className={styles.buildTitle}>{buildData.build_name}</h2>
-        <button className={styles.deleteButton} onClick={handleDelete}>
-          🗑️
-        </button>
-      </div>
-
-      <div className={styles.pointsDisplay}>
-        Points Available: <span>{points}</span>
-      </div>
-
-      <div className={styles.section}>
-        <div className={styles.statRow}>
-          <span>❤️ HP: {stats.hp}</span>
-          <div className={styles.controls}>
-            <button onClick={() => handleStatChange("hp", "decrease")}>
-              -
-            </button>
-            <button onClick={() => handleStatChange("hp", "increase")}>
-              +
-            </button>
-          </div>
-        </div>
-
-        <div className={styles.statRow}>
-          <span>⚔️ Attack: {stats.attack}</span>
-          <div className={styles.controls}>
-            <button onClick={() => handleStatChange("attack", "decrease")}>
-              -
-            </button>
-            <button onClick={() => handleStatChange("attack", "increase")}>
-              +
-            </button>
-          </div>
-        </div>
-
-        <div className={styles.statRow}>
-          <span>🛡️ Defense: {stats.defense}</span>
-          <div className={styles.controls}>
-            <button onClick={() => handleStatChange("defense", "decrease")}>
-              -
-            </button>
-            <button onClick={() => handleStatChange("defense", "increase")}>
-              +
-            </button>
-          </div>
-        </div>
-        {isModified && (
-          <button className={styles.saveButton} onClick={handleSave}>
-            💾 SAVE CHANGES
+        <div className={styles.headerControls}>
+          <span className={styles.pointsBadge}>Points: {points}</span>
+          <button className={styles.deleteButton} onClick={handleDelete}>
+            🗑️
           </button>
-        )}
+        </div>
       </div>
 
-      <div className={styles.section}>
-        <h3 className={styles.sectionTitle}>Weapon</h3>
-        <Weapon
-          weaponId={selectedWeaponId}
-          onSelect={(newId) => {
-            setSelectedWeaponId(newId);
-            setIsModified(true);
-          }}
-        />
-      </div>
+      <div className={styles.arena}>
+        <div className={styles.leftSide}>
+          <div className={styles.imagePlaceholder}>Enemy Image</div>
+          <SingleEnemy />
+        </div>
 
-      <div className={styles.section}>
-        <h3 className={styles.sectionTitle}>Enemy</h3>
-        <SingleEnemy />
+        <div className={styles.vsContainer}>
+          <span className={styles.vsText}>VS</span>
+        </div>
+
+        <div className={styles.rightSide}>
+          <div className={styles.imagePlaceholder}>Hero Image</div>
+
+          <div className={styles.statsContainer}>
+            <div className={styles.statRow}>
+              <span>❤️ HP: {stats.hp}</span>
+              <div className={styles.controls}>
+                <button onClick={() => handleStatChange("hp", "decrease")}>
+                  -
+                </button>
+                <button onClick={() => handleStatChange("hp", "increase")}>
+                  +
+                </button>
+              </div>
+            </div>
+            <div className={styles.statRow}>
+              <span>⚔️ ATK: {stats.attack}</span>
+              <div className={styles.controls}>
+                <button onClick={() => handleStatChange("attack", "decrease")}>
+                  -
+                </button>
+                <button onClick={() => handleStatChange("attack", "increase")}>
+                  +
+                </button>
+              </div>
+            </div>
+            <div className={styles.statRow}>
+              <span>🛡️ DEF: {stats.defense}</span>
+              <div className={styles.controls}>
+                <button onClick={() => handleStatChange("defense", "decrease")}>
+                  -
+                </button>
+                <button onClick={() => handleStatChange("defense", "increase")}>
+                  +
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div className={styles.weaponSection}>
+            <Weapon
+              weaponId={selectedWeaponId}
+              onSelect={(newId) => {
+                setSelectedWeaponId(newId);
+                setIsModified(true);
+              }}
+            />
+          </div>
+
+          {isModified && (
+            <button className={styles.saveButton} onClick={handleSave}>
+              💾 SAVE
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

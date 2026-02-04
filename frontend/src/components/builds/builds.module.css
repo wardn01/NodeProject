@@ -1,0 +1,35 @@
+.buildsContainer {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  min-height: 80vh;
+}
+
+.buildsTitle {
+  color: white;
+  text-align: center;
+  font-size: 2rem;
+  margin: 10px 0 20px 0;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  border-bottom: 3px solid #e94560;
+  align-self: center;
+  padding-bottom: 10px;
+  text-shadow: 0 0 10px rgba(233, 69, 96, 0.5);
+}
+
+.noBuildsText {
+  color: #a0a0a0;
+  text-align: center;
+  font-size: 1.2rem;
+  margin-top: 40px;
+  font-style: italic;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px dashed #555;
+}
