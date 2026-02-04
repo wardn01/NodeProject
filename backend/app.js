@@ -17,6 +17,7 @@ app.use(
 const userRouter = require("./routes/usersRoute");
 const enemiesRouter = require("./routes/enemiesRoute");
 const buildsRouter = require("./routes/buildsRoute");
+const weaponsRouter = require("./routes/weaponRoute");
 
 app.use(
   session({
@@ -30,5 +31,6 @@ app.use(
 app.use("/user", userRouter);
 app.use("/enemy", enemiesRouter);
 app.use("/build", buildsRouter);
+app.use("/weapon", weaponsRouter);
 
 app.listen(8000, () => console.log("Server running on http://localhost:8000"));

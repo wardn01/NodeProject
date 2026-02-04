@@ -1,6 +1,8 @@
 import styles from "./profile.module.css";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { AiOutlineEye } from "react-icons/ai";
+import { AiOutlineEyeInvisible } from "react-icons/ai";
 
 const Profile = ({ setPage }) => {
   const [profileData, setProfileData] = useState(null);
@@ -11,6 +13,7 @@ const Profile = ({ setPage }) => {
   const [isEditing, setIsEditing] = useState("nothing");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [eyeInvisible, setEyeInvisible] = useState(true);
 
   // Fetch user profile data on component mount
   useEffect(() => {
@@ -206,14 +209,22 @@ const Profile = ({ setPage }) => {
 
         <p className={styles.infoValue}>
           {isEditing === "password" ? (
-            <input
-              className={styles.editInput}
-              type="password"
-              name="password"
-              placeholder="New Password"
-              value={profileDataToEdit.password}
-              onChange={handleChange}
-            />
+            <div className={styles.passwordInputContainer}>
+              <input
+                className={styles.editInput}
+                type={eyeInvisible ? "password" : "text"}
+                name="password"
+                placeholder="New Password"
+                value={profileDataToEdit.password}
+                onChange={handleChange}
+              />
+              <span
+                className={styles.passwordToggleIcon}
+                onClick={() => setEyeInvisible(!eyeInvisible)}
+              >
+                {eyeInvisible ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
+              </span>
+            </div>
           ) : (
             "********"
           )}

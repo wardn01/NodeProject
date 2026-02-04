@@ -2,14 +2,15 @@ import styles from "./allEnemies.module.css";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-const AllEnemies = ({setPage}) => {
+const AllEnemies = ({ onSelect, onClose }) => {
   const [allEnemies, setAllEnemies] = useState([]);
-  const [selectedEnemy, setSelectedEnemy] = useState(null);
 
   useEffect(() => {
     const fetchEnemies = async () => {
       try {
-        const enemiesData = await axios.get("http://localhost:8000/enemy/allEnemies");
+        const enemiesData = await axios.get(
+          "http://localhost:8000/enemy/allEnemies",
+        );
         setAllEnemies(enemiesData.data.enemies);
       } catch (error) {
         console.error("Error fetching enemies:", error);
@@ -23,10 +24,7 @@ const AllEnemies = ({setPage}) => {
     <div className={styles.allEnemiesContainer}>
       <div className={styles.allEnemiesHeader}>
         <p className={styles.allEnemiesHeaderTitle}>Select an enemy</p>
-        <p
-          className={styles.allEnemiesCloseButton}
-          onClick={() => setPage("mainPage")}
-        >
+        <p className={styles.allEnemiesCloseButton} onClick={onClose}>
           X
         </p>
       </div>
@@ -36,14 +34,17 @@ const AllEnemies = ({setPage}) => {
           <div
             key={enemy.id}
             className={styles.enemyCard}
-            onClick={() => setSelectedEnemy(enemy)}
+            onClick={() => {
+              onSelect(enemy);
+              onClose();
+            }}
           >
             <p className={styles.enemyName}>{enemy.name}</p>
-            <p className={styles.enemyDetail}>HP: {enemy.hp}</p>
-            <p className={styles.enemyDetail}>Attack: {enemy.attack}</p>
-            <p className={styles.enemyDetail}>Defense: {enemy.defense}</p>
+            <p className={styles.enemyDetail}>❤️ HP: {enemy.hp}</p>
+            <p className={styles.enemyDetail}>⚔️ Attack: {enemy.attack}</p>
+            <p className={styles.enemyDetail}>🛡️ Defense: {enemy.defense}</p>
             <p className={styles.enemyDetail}>
-              TotalPower: {enemy.total_power}
+              🔥 Total Power: {enemy.total_power}
             </p>
           </div>
         ))}

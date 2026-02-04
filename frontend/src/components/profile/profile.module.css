@@ -117,6 +117,27 @@
   border-color: black;
 }
 
+.passwordInputContainer {
+  position: relative;
+}
+
+.passwordToggleIcon {
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #333;
+  transition: color 0.3s ease;
+  font-size: var(--font-size-large);
+  display: flex;
+  align-items: center;
+}
+
+.passwordToggleIcon:hover {
+  color: black;
+}
+
 .successMessage {
   color: green;
   background-color: #d4edda;

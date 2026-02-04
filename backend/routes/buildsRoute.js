@@ -4,12 +4,15 @@ const checkAuth = require("../middleware/authMiddleware");
 const buildController = require("../controllers/buildController");
 
 // build/allBuilds
-router.get("/allBuilds", checkAuth, buildController.allBuilds);
+router.get("/all", checkAuth, buildController.allBuilds);
 
-// build/add
-router.post("/addBuild", checkAuth, buildController.addBuild);
+// build/create
+router.post("/create", checkAuth, buildController.createBuild);
 
-// build/deleteBuilds
-router.delete("/deleteBuild/:id", checkAuth, buildController.deleteBuild);
+// build/update/:id
+router.put("/update/:id", checkAuth, buildController.updateBuild);
+
+// build/delete/:id
+router.delete("/delete/:id", checkAuth, buildController.deleteBuild);
 
 module.exports = router;
