@@ -38,6 +38,9 @@ const Weapons = ({ onSelect, onClose }) => {
           <p className={styles.weaponName}>{weapon.name}</p>
           <p className={styles.weaponDetail}> Type: {weapon.element_type}</p>
           <p className={styles.weaponDetail}>⚔️ Attack: {weapon.base_damage}</p>
+          <p className={styles.weaponDetail}>
+            Description: {weapon.description}
+          </p>
         </div>
       ))}
     </div>
