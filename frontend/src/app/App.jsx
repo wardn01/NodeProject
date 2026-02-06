@@ -13,9 +13,7 @@ export default function App() {
   const [page, setPage] = useState("authPage");
   return (
     <div className={styles.app}>
-      {page !== "authPage" && (
-        <Header page={page} setPage={setPage} title={"wwoowow"} />
-      )}
+      {page !== "authPage" && <Header page={page} setPage={setPage} />}
 
       <Main page={page} setPage={setPage} />
 

@@ -1,8 +1,16 @@
 .main {
+  min-height: calc(100vh - 80px);
+  width: 100%;
+  background-color: var(--color-bg-main);
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  min-width: 100vw;
-  background-color: var(--color-dark-navy);
+  padding: 20px;
+  position: relative;
+}
+
+@media (max-width: 768px) {
+  .main {
+    padding: 10px;
+  }
 }

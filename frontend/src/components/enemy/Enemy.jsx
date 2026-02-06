@@ -1,8 +1,8 @@
-import styles from "./singleEnemy.module.css";
+import styles from "./enemy.module.css";
 import { useState } from "react";
-import AllEnemies from "../allEnemies/AllEnemies";
+import Enemies from "../enemies/Enemies";
 
-const SingleEnemy = () => {
+const Enemy = () => {
   const [enemyData, setEnemyData] = useState(null);
   const [showEnemyList, setShowEnemyList] = useState(false);
 
@@ -12,7 +12,7 @@ const SingleEnemy = () => {
   };
 
   return (
-    <div className={styles.singleEnemyContainer}>
+    <div className={styles.enemyContainer}>
       <button
         className={styles.selectButton}
         onClick={() => setShowEnemyList(true)}
@@ -34,7 +34,7 @@ const SingleEnemy = () => {
       )}
       {showEnemyList && (
         <div className={styles.popupOverlay}>
-          <AllEnemies
+          <Enemies
             onSelect={handleEnemySelection}
             onClose={() => setShowEnemyList(false)}
           />
@@ -44,4 +44,4 @@ const SingleEnemy = () => {
   );
 };
 
-export default SingleEnemy;
+export default Enemy;

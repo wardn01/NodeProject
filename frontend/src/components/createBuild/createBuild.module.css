@@ -1,60 +1,73 @@
 .createBuildContainer {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  width: 100%;
-  margin-bottom: 20px;
+  justify-content: center;
 }
 
 .createBuildButton {
-  background: linear-gradient(135deg, #e94560, #c0394d);
-  color: white;
-  padding: 15px 40px;
-  font-size: 1.1rem;
-  font-weight: bold;
+  background-color: var(--color-gold);
+  color: var(--color-dark-navy);
+  width: 40px;
+  height: 40px;
+  font-size: 3rem;
+  font-weight: 400;
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  box-shadow: 0 4px 15px rgba(233, 69, 96, 0.3);
-  transition: transform 0.2s, box-shadow 0.2s, background 0.3s;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  width: 100%;
-  max-width: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  padding-bottom: 5px;
+  line-height: 1;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 .createBuildButton:hover {
+  background-color: var(--color-white);
   transform: translateY(-3px);
-  box-shadow: 0 6px 20px rgba(233, 69, 96, 0.5);
-  background: linear-gradient(135deg, #ff5e78, #d6455b);
+  box-shadow: 0 6px 15px rgba(255, 215, 0, 0.3);
 }
 
-.createBuildButton:active {
-  transform: translateY(0);
+.errorMessage,
+.successMessage {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 15px;
+  white-space: nowrap;
+  z-index: 100;
+  padding: 8px 25px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  border-radius: 6px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.6);
+  font-family: var(--font-family-main);
+  animation: fadeIn 0.3s ease;
+  min-width: 200px;
+  text-align: center;
 }
 
 .errorMessage {
-  color: #ff4757;
-  background-color: rgba(255, 71, 87, 0.1);
-  padding: 10px;
-  border-radius: 5px;
-  margin-top: 10px;
-  font-size: 0.9rem;
-  border: 1px solid rgba(255, 71, 87, 0.3);
-  width: 100%;
-  max-width: 400px;
-  text-align: center;
+  background-color: var(--color-dark-navy);
+  color: var(--color-error-red);
+  border: 1px solid var(--color-error-red);
 }
 
 .successMessage {
-  color: #2ecc71;
-  background-color: rgba(46, 204, 113, 0.1);
-  padding: 10px;
-  border-radius: 5px;
-  margin-top: 10px;
-  font-size: 0.9rem;
-  border: 1px solid rgba(46, 204, 113, 0.3);
-  width: 100%;
-  max-width: 400px;
-  text-align: center;
+  background-color: var(--color-dark-navy);
+  color: var(--color-green);
+  border: 1px solid var(--color-green);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 10px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
 }

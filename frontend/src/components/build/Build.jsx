@@ -2,7 +2,7 @@ import styles from "./build.module.css";
 import { useState } from "react";
 import axios from "axios";
 import Weapon from "../weapon/Weapon";
-import SingleEnemy from "../singleEnemy/SingleEnemy";
+import Enemy from "../enemy/Enemy";
 
 const Build = ({ buildData, refreshBuilds }) => {
   const [stats, setStats] = useState({
@@ -65,6 +65,11 @@ const Build = ({ buildData, refreshBuilds }) => {
       <div className={styles.header}>
         <h2 className={styles.buildTitle}>{buildData.build_name}</h2>
         <div className={styles.headerControls}>
+          {isModified && (
+            <button className={styles.saveButton} onClick={handleSave}>
+              💾 SAVE
+            </button>
+          )}
           <span className={styles.pointsBadge}>Points: {points}</span>
           <button className={styles.deleteButton} onClick={handleDelete}>
             🗑️
@@ -75,7 +80,7 @@ const Build = ({ buildData, refreshBuilds }) => {
       <div className={styles.arena}>
         <div className={styles.leftSide}>
           <div className={styles.imagePlaceholder}>Enemy Image</div>
-          <SingleEnemy />
+          <Enemy />
         </div>
 
         <div className={styles.vsContainer}>
@@ -130,12 +135,6 @@ const Build = ({ buildData, refreshBuilds }) => {
               }}
             />
           </div>
-
-          {isModified && (
-            <button className={styles.saveButton} onClick={handleSave}>
-              💾 SAVE
-            </button>
-          )}
         </div>
       </div>
     </div>

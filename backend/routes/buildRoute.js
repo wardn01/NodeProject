@@ -4,7 +4,7 @@ const checkAuth = require("../middleware/authMiddleware");
 const buildController = require("../controllers/buildController");
 
 // build/allBuilds
-router.get("/all", checkAuth, buildController.allBuilds);
+router.get("/all", checkAuth, buildController.getBuilds);
 
 // build/create
 router.post("/create", checkAuth, buildController.createBuild);

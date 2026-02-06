@@ -2,10 +2,10 @@ const express = require("express");
 const router = express.Router();
 const enemyController = require("../controllers/enemyController");
 
-// return all enemies
-router.get("/allEnemies", enemyController.allEnemies);
+// enemy/enemies
+router.get("/enemies", enemyController.getEnemies);
 
-// return single Enemy
-router.get("/singleEnemy/:id", enemyController.singleEnemy);
+// enemy/:id
+router.get("/:id", enemyController.getEnemy);
 
 module.exports = router;

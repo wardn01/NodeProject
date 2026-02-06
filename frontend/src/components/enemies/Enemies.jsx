@@ -1,15 +1,15 @@
-import styles from "./allEnemies.module.css";
+import styles from "./enemies.module.css";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-const AllEnemies = ({ onSelect, onClose }) => {
+const Enemies = ({ onSelect, onClose }) => {
   const [allEnemies, setAllEnemies] = useState([]);
 
   useEffect(() => {
     const fetchEnemies = async () => {
       try {
         const enemiesData = await axios.get(
-          "http://localhost:8000/enemy/allEnemies",
+          "http://localhost:8000/enemy/enemies",
         );
         setAllEnemies(enemiesData.data.enemies);
       } catch (error) {
@@ -21,10 +21,10 @@ const AllEnemies = ({ onSelect, onClose }) => {
   }, []);
 
   return (
-    <div className={styles.allEnemiesContainer}>
-      <div className={styles.allEnemiesHeader}>
-        <p className={styles.allEnemiesHeaderTitle}>Select an enemy</p>
-        <p className={styles.allEnemiesCloseButton} onClick={onClose}>
+    <div className={styles.enemiesContainer}>
+      <div className={styles.enemiesHeader}>
+        <p className={styles.enemiesHeaderTitle}>Select an enemy</p>
+        <p className={styles.enemiesCloseButton} onClick={onClose}>
           X
         </p>
       </div>
@@ -53,4 +53,4 @@ const AllEnemies = ({ onSelect, onClose }) => {
   );
 };
 
-export default AllEnemies;
+export default Enemies;

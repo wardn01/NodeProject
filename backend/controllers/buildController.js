@@ -1,6 +1,6 @@
 const db = require("../dbSingleton").getConnection(); // db
 
-const allBuilds = (req, res) => {
+const getBuilds = (req, res) => {
   const userId = req.session.user.id;
 
   const query = "SELECT * FROM builds WHERE user_id = ?";
@@ -93,4 +93,4 @@ const deleteBuild = (req, res) => {
   });
 };
 
-module.exports = { allBuilds, createBuild, updateBuild, deleteBuild };
+module.exports = { getBuilds, createBuild, updateBuild, deleteBuild };

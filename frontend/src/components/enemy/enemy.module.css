@@ -1,0 +1,85 @@
+.enemyContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+}
+
+.selectButton {
+  background-color: var(--color-gold);
+  color: var(--color-dark-navy);
+  padding: 10px 20px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: var(--font-family-header);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: background-color 0.2s;
+  width: 100%;
+}
+
+.selectButton:hover {
+  background-color: var(--color-white);
+}
+
+.enemyCard {
+  background-color: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--color-slate-blue);
+  border-radius: 8px;
+  padding: 15px;
+  text-align: left;
+  transition: border-color 0.2s;
+}
+
+.enemyCard:hover {
+  border-color: var(--color-gold);
+}
+
+.enemyCard h2 {
+  color: var(--color-gold);
+  font-size: 1.6rem;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 8px;
+  font-family: var(--font-family-header);
+  letter-spacing: 1px;
+}
+
+.stats p {
+  margin: 6px 0;
+  font-size: 1.3rem;
+  color: var(--color-light-grey);
+  font-weight: 500;
+  font-family: var(--font-family-main);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.placeholderText {
+  color: var(--color-light-grey);
+  font-style: italic;
+  text-align: center;
+  font-size: 1.2rem;
+  margin-top: 10px;
+  opacity: 0.6;
+  font-family: var(--font-family-main);
+}
+
+.popupOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(12, 24, 33, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  backdrop-filter: blur(5px);
+}

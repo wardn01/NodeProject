@@ -1,6 +1,6 @@
 const db = require("../dbSingleton").getConnection(); // db
 
-const allEnemies = (req, res) => {
+const getEnemies = (req, res) => {
   const query = `
         SELECT *, (hp + attack + defense) AS total_power 
         FROM enemies 
@@ -12,7 +12,7 @@ const allEnemies = (req, res) => {
   });
 };
 
-const singleEnemy = (req, res) => {
+const getEnemy = (req, res) => {
   const enemyId = req.params.id;
   const query = `
         SELECT *, (hp + attack + defense) AS total_power 
@@ -23,10 +23,10 @@ const singleEnemy = (req, res) => {
     if (err) return res.status(500).send("Error on server.", err);
 
     if (results.length === 0) {
-      return res.status(404).send({ message: "Build deleted successfully!" });
+      return res.status(404).send({ message: "Enemy not found!" });
     }
     res.status(200).json({ enemy: results[0] });
   });
 };
 
-module.exports = { allEnemies, singleEnemy };
+module.exports = { getEnemies, getEnemy };

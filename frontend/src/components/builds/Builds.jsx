@@ -23,8 +23,11 @@ const Builds = () => {
 
   return (
     <div className={styles.buildsContainer}>
-      <CreateBuild onBuildCreated={fetchBuilds} />
-      <h2 className={styles.buildsTitle}>Your Builds</h2>
+      <div className={styles.headerContainer}>
+        <h2 className={styles.buildsTitle}>Your Builds</h2>
+        <CreateBuild onBuildCreated={fetchBuilds} />
+      </div>
+
       {builds.length === 0 ? (
         <p className={styles.noBuildsText}>No builds available.</p>
       ) : (

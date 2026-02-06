@@ -1,6 +1,6 @@
 const db = require("../dbSingleton").getConnection(); // db
 
-const getAllWeapons = (req, res) => {
+const getWeapons = (req, res) => {
   const query = "SELECT * FROM weapons";
 
   db.query(query, (err, results) => {
@@ -13,7 +13,7 @@ const getAllWeapons = (req, res) => {
   });
 };
 
-const getWeaponById = (req, res) => {
+const getWeapon = (req, res) => {
   const weaponId = req.params.id;
   const query = "SELECT * FROM weapons WHERE id = ?";
   db.query(query, [weaponId], (err, results) => {
@@ -28,4 +28,4 @@ const getWeaponById = (req, res) => {
   });
 };
 
-module.exports = { getAllWeapons, getWeaponById };
+module.exports = { getWeapons, getWeapon };

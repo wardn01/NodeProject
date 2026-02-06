@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const enemyController = require("../controllers/weaponController");
+const weaponController = require("../controllers/weaponController");
 
-// return all weapons
-router.get("/all", enemyController.getAllWeapons);
+// weapon/all
+router.get("/all", weaponController.getWeapons);
 
-// return weapon by id
-router.get("/:id", enemyController.getWeaponById);
+// weapon/:id
+router.get("/:id", weaponController.getWeapon);
 
 module.exports = router;
