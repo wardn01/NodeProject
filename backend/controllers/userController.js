@@ -5,103 +5,70 @@ const bcrypt = require("bcrypt"); // password
 const register = (req, res) => {
   const { username, nickname, email, password } = req.body;
 
-  if (!username || !nickname || !email || !password) {
-    return res.status(400).json({ message: "Missing data" });
-  }
+  bcrypt.genSalt(10, (err, salt) => {
+    if (err) return res.status(500).send({ message: "Error generating salt." });
 
-  const checkUser = "SELECT * FROM users WHERE username = ? OR email = ?";
-  db.query(checkUser, [username, email], (err, results) => {
-    if (err) {
-      console.error("Error in database:", err);
-      return res.status(500).send({ message: "Error registering!!" });
-    }
-    if (results.length > 0) {
-      console.log("Username or email already exists.");
-      return res
-        .status(400)
-        .send({ message: "Username or email already exists." });
-    }
-    createUser();
-  });
+    bcrypt.hash(password, salt, (err, passwordHash) => {
+      if (err)
+        return res.status(500).send({ message: "Error hashing password." });
 
-  const createUser = () =>
-    bcrypt.genSalt(10, (err, salt) => {
-      if (err) return;
+      const query =
+        "INSERT INTO users (username, nickname, email, password_hash) VALUES (?, ?, ?, ?)";
 
-      bcrypt.hash(password, salt, (err, hashedPassword) => {
-        if (err) return;
-
-        const query =
-          "INSERT INTO users (username, nickname, email, password_hash) VALUES (?, ?, ?, ?)";
-        db.query(
-          query,
-          [username, nickname, email, hashedPassword],
-          (err, result) => {
-            if (err) {
-              console.error("Error in database:", err);
-              return res.status(500).send({ message: "Error registering!!" });
-            }
-            res.status(201).send({ message: "User registered!" });
-          },
-        );
+      db.query(query, [username, nickname, email, passwordHash], (err) => {
+        if (err) {
+          console.error("DB Error:", err);
+          return res.status(500).send({ message: "Error registering user." });
+        } else {
+          res.status(200).send({ message: "User registered successfully." });
+        }
       });
     });
+  });
 };
 
 // -------------------- User Login -------------------- //
 const login = (req, res) => {
-  const { username, password } = req.body;
-  const query = "SELECT * FROM users WHERE username = ? OR email = ?";
-  db.query(query, [username, username], (err, results) => {
-    if (err) return res.status(500).send({ message: "Error on server." });
+  const { password } = req.body;
+  const user = req.user;
 
-    if (results.length === 0) {
-      return res.status(400).send({ message: "User dose not exist." });
+  bcrypt.compare(password, user.password_hash, (err, isMatch) => {
+    if (err) {
+      console.error("Bcrypt Error:", err);
+      return res.status(500).send({ message: "Error during login." });
+    }
+    if (!isMatch) {
+      return res.status(400).send({ message: "Incorrect password." });
     }
 
-    const user = results[0];
+    req.session.user = {
+      id: user.id,
+      username: user.username,
+      nickname: user.nickname,
+      email: user.email,
+    };
 
-    bcrypt.compare(password, user.password_hash, (err, isMatch) => {
-      if (err)
-        return res.status(500).send({ message: "Error during comparison." });
-
-      if (isMatch) {
-        req.session.user = user;
-        return res.send({
-          message: "You have successfully logged in.",
-          user: {
-            id: user.id,
-            username: user.username,
-            nickname: user.nickname,
-            email: user.email,
-          },
-        });
-      } else {
-        return res.status(400).send({ message: "Invalid password." });
-      }
-    });
+    res.status(200).send({ message: "Login successful." });
   });
 };
 
 // -------------------- Update User Profile -------------------- //
-const update = async (req, res) => {
+const update = (req, res) => {
   const userId = req.session.user.id;
   const { nickname, password } = req.body;
 
-  try {
+  const executeUpdate = (passwordHash) => {
     const updates = [];
     const params = [];
 
     if (nickname) {
       updates.push("nickname = ?");
       params.push(nickname);
-      req.session.user.nickname = nickname;
     }
 
-    if (password) {
-      const hashedPassword = await bcrypt.hash(password, 10);
+    if (passwordHash) {
       updates.push("password_hash = ?");
-      params.push(hashedPassword);
+      params.push(passwordHash);
     }
 
     if (updates.length === 0) {
@@ -109,31 +76,43 @@ const update = async (req, res) => {
     }
 
     params.push(userId);
-
     const query = `UPDATE users SET ${updates.join(", ")} WHERE id = ?`;
+
     db.query(query, params, (err) => {
       if (err) {
         console.error("DB Error:", err);
         return res.status(500).send({ message: "Error updating profile." });
       }
-
-      res.send({ message: "Profile updated successfully." });
+      if (nickname) req.session.user.nickname = nickname;
+      res.status(200).send({ message: "Profile updated successfully." });
     });
-  } catch (err) {
-    console.error("Update Error:", err);
-    res.status(500).send({ message: "Error updating profile." });
+  };
+
+  if (password) {
+    bcrypt.hash(password, 10, (err, passwordHash) => {
+      if (err) {
+        console.error("Hash Error:", err);
+        return res.status(500).send({ message: "Error processing password." });
+      }
+      executeUpdate(passwordHash);
+    });
+  } else {
+    executeUpdate(null);
   }
 };
 
 // -------------------- Get User Profile -------------------- //
 const profile = (req, res) => {
-  res.send({
-    user: {
-      id: req.session.user.id,
-      username: req.session.user.username,
-      nickname: req.session.user.nickname,
-      email: req.session.user.email,
-    },
+  const user = req.session?.user;
+
+  if (!user) {
+    return res.status(401).json({ message: "Not authenticated" });
+  }
+  res.status(200).send({
+    id: user.id,
+    username: user.username,
+    nickname: user.nickname,
+    email: user.email,
   });
 };
 
@@ -141,9 +120,12 @@ const profile = (req, res) => {
 const logout = (req, res) => {
   req.session.destroy((err) => {
     if (err) {
-      return res.status(500).send({ message: "Error terminating session." });
+      console.error("Logout Error:", err);
+      return res.status(500).send({ message: "Error during logout." });
     }
-    res.send({ message: "Successfully logged out." });
+
+    res.clearCookie("connect.sid");
+    res.status(200).send({ message: "Logout successful." });
   });
 };
 

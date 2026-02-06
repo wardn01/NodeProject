@@ -75,7 +75,6 @@ function Auth({ setPage }) {
             name="username"
             placeholder="User Name"
             onChange={handleChange}
-            required
           />
         )}
         {!isLogin && (
@@ -85,7 +84,6 @@ function Auth({ setPage }) {
             name="nickname"
             placeholder="Nick Name"
             onChange={handleChange}
-            required
           />
         )}
         <input
@@ -94,7 +92,6 @@ function Auth({ setPage }) {
           name={(!isLogin && "email") || "username"}
           placeholder={(!isLogin && "Email Address") || "Username or Email"}
           onChange={handleChange}
-          required
         />
         <div className={styles.passwordInputContainer}>
           <input
@@ -103,7 +100,6 @@ function Auth({ setPage }) {
             name="password"
             placeholder="Password"
             onChange={handleChange}
-            required
           />
           <span
             className={styles.passwordToggleIcon}
@@ -120,7 +116,6 @@ function Auth({ setPage }) {
               name="confirmPassword"
               placeholder="Confirm Password"
               onChange={handleChange}
-              required
             />
             <span
               className={styles.passwordToggleIcon}

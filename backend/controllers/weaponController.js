@@ -1,5 +1,6 @@
 const db = require("../dbSingleton").getConnection(); // db
 
+// -------------------- Get All Weapons -------------------- //
 const getWeapons = (req, res) => {
   const query = "SELECT * FROM weapons";
 
@@ -13,6 +14,7 @@ const getWeapons = (req, res) => {
   });
 };
 
+// -------------------- Get Weapon by ID -------------------- //
 const getWeapon = (req, res) => {
   const weaponId = req.params.id;
   const query = "SELECT * FROM weapons WHERE id = ?";

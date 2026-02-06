@@ -1,23 +1,24 @@
 const express = require("express");
 const session = require("express-session");
-const app = express();
-app.use(express.json());
-
-app.use(express.urlencoded({ extended: true }));
-
 const cors = require("cors");
-app.use(
-  cors({
-    origin: ["http://localhost:3000"],
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-  }),
-);
 
+const checkAuth = require("./middleware/authMiddleware");
 const userRouter = require("./routes/userRoute");
 const enemyRouter = require("./routes/enemyRoute");
 const buildRouter = require("./routes/buildRoute");
 const weaponRouter = require("./routes/weaponRoute");
+
+const app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use(
+  cors({
+    origin: ["http://localhost:5000"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  }),
+);
 
 app.use(
   session({
@@ -29,6 +30,7 @@ app.use(
 );
 
 app.use("/user", userRouter);
+app.use(checkAuth);
 app.use("/enemy", enemyRouter);
 app.use("/build", buildRouter);
 app.use("/weapon", weaponRouter);

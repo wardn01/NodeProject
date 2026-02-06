@@ -22,6 +22,7 @@ const Weapon = ({ weaponId, onSelect }) => {
         try {
           const response = await axios.get(
             `http://localhost:8000/weapon/${weaponId}`,
+            { withCredentials: true },
           );
           setWeaponData(response.data.weapon);
         } catch (error) {

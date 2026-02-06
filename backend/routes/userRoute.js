@@ -7,17 +7,31 @@ const checkUser = require("../middleware/userMiddleware");
 // user/register
 router.post(
   "/register",
+  checkUser.checkData,
   checkUser.checkUsername,
-  checkUser.checkPassword,
   checkUser.checkNickname,
+  checkUser.checkEmail,
+  checkUser.checkPassword,
+  checkUser.checkUserIfExists,
   userController.register,
 );
 
 // user/login
-router.post("/login", userController.login);
+router.post(
+  "/login",
+  checkUser.checkData,
+  checkUser.checkUserIfExists,
+  userController.login,
+);
 
 // user/update
-router.post("/update", checkAuth, checkUser.checkNickname, checkUser.checkPassword, userController.update);
+router.post(
+  "/update",
+  checkAuth,
+  checkUser.checkNickname,
+  checkUser.checkPassword,
+  userController.update,
+);
 
 // user/profile
 router.get("/profile", checkAuth, userController.profile);

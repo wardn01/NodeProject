@@ -8,9 +8,9 @@ const Enemies = ({ onSelect, onClose }) => {
   useEffect(() => {
     const fetchEnemies = async () => {
       try {
-        const enemiesData = await axios.get(
-          "http://localhost:8000/enemy/enemies",
-        );
+        const enemiesData = await axios.get("http://localhost:8000/enemy/all", {
+          withCredentials: true,
+        });
         setAllEnemies(enemiesData.data.enemies);
       } catch (error) {
         console.error("Error fetching enemies:", error);

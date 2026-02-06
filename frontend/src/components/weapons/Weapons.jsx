@@ -8,7 +8,12 @@ const Weapons = ({ onSelect, onClose }) => {
   useEffect(() => {
     const fetchWeapons = async () => {
       try {
-        const weaponsData = await axios.get("http://localhost:8000/weapon/all");
+        const weaponsData = await axios.get(
+          "http://localhost:8000/weapon/all",
+          {
+            withCredentials: true,
+          },
+        );
         setWeapons(weaponsData.data.weapons);
       } catch (error) {
         console.error("Error fetching weapons:", error);
