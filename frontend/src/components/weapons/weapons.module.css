@@ -1,102 +1,153 @@
+/* --- الحاوية الرئيسية (قائمة عمودية) --- */
 .weaponsContainer {
-  background-color: var(--color-bg-card);
-  border: 1px solid var(--color-primary);
-  border-radius: var(--border-radius);
-  width: 90%;
-  max-width: 500px;
-  max-height: 80vh;
-  overflow-y: auto;
-  padding: 20px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+  width: 100%;
+  max-width: 900px;
+  background-color: #0f161e; /* خلفية داكنة */
+  border: 2px solid var(--color-gold);
+  border-radius: 12px;
+  padding: 30px;
+  margin: 0 auto;
+
+  /* تغيير العرض من Grid إلى Flex Column لتظهر تحت بعض */
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 15px; /* مسافة بين كل سلاح والآخر */
+
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 0 50px rgba(0, 0, 0, 0.9);
 }
 
-.weaponsContainer::-webkit-scrollbar {
-  width: 6px;
-}
+/* (تم حذف كود السكرول بار بناءً على طلبك) */
 
-.weaponsContainer::-webkit-scrollbar-thumb {
-  background-color: var(--color-primary);
-  border-radius: 3px;
-}
-
-.weaponsContainer::-webkit-scrollbar-track {
-  background-color: var(--color-dark-navy);
-}
-
+/* --- الهيدر --- */
 .weaponsHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 15px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 2px solid var(--color-white);
+  padding-bottom: 15px;
+  margin-bottom: 20px;
   position: sticky;
   top: 0;
-  background-color: var(--color-bg-card);
   z-index: 10;
+  background-color: #0f161e; /* لتغطية البطاقات عند السكرول */
 }
 
 .weaponsHeaderTitle {
-  color: var(--color-primary);
+  margin: 0;
   font-family: var(--font-family-header);
-  font-size: 1.6rem;
-  font-weight: 700;
+  font-size: 2rem;
+  color: var(--color-gold);
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 2px;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
 }
 
 .weaponsCloseButton {
-  color: var(--color-text-muted);
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   font-weight: bold;
+  color: white;
   cursor: pointer;
-  transition: color 0.2s;
-  padding: 5px;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-slate-blue);
+  border-radius: 50%;
+  transition: all 0.2s;
 }
 
 .weaponsCloseButton:hover {
-  color: var(--color-error);
+  background-color: #ff4d4d;
+  border-color: #ff4d4d;
+  transform: rotate(90deg);
 }
 
+/* --- بطاقة السلاح (بالعرض الكامل) --- */
 .weaponCard {
-  background-color: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--color-border);
-  border-radius: 4px;
-  padding: 15px;
+  width: 100%; /* عرض كامل */
+  height: 140px; /* ارتفاع مناسب للشريط العرضي */
+  border: 1px solid var(--color-slate-blue);
+  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  position: relative;
+
+  /* ترتيب المحتوى داخل البطاقة */
   display: flex;
   flex-direction: column;
-  gap: 5px;
-}
+  justify-content: center; /* توسيط النصوص عمودياً */
+  padding: 0 30px; /* هوامش جانبية للنص */
 
-.weaponImage {
+  /* الخلفية */
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+
+  /* تغميق الصورة بشكل كبير ليظهر النص بوضوح (Overlay) */
+  box-shadow: inset 0 0 0 1000px rgba(0, 0, 0, 0.7); 
 }
 
 .weaponCard:hover {
-  border-color: var(--color-primary);
-  background-color: rgba(255, 255, 255, 0.06);
-  transform: translateX(5px);
+  border-color: var(--color-gold);
+  transform: translateX(5px); /* حركة خفيفة لليمين عند التحويم */
+  box-shadow: inset 0 0 0 1000px rgba(0, 0, 0, 0.5); /* تفتيح الخلفية قليلاً */
 }
 
+/* --- تفاصيل السلاح --- */
 .weaponName {
-  color: var(--color-white);
+  margin: 0 0 5px 0;
+  color: var(--color-gold);
   font-family: var(--font-family-header);
-  font-size: 1.3rem;
-  font-weight: 700;
+  font-size: 1.6rem; /* حجم خط أكبر لأن المساحة واسعة */
+  font-weight: bold;
   text-transform: uppercase;
-  margin-bottom: 5px;
+  letter-spacing: 1px;
+  text-shadow: 2px 2px 0 #000;
+  z-index: 2;
 }
 
+/* تجميع التفاصيل بجانب بعضها إذا أمكن أو تحت بعض */
 .weaponDetail {
-  color: var(--color-text-muted);
-  font-size: 1.1rem;
+  margin: 2px 0;
+  color: #e0e0e0;
+  font-size: 1rem;
   font-family: var(--font-family-main);
-  line-height: 1.4;
+  text-shadow: 1px 1px 2px #000;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* الوصف */
+.weaponDetail:last-child {
+  font-size: 0.9rem;
+  color: #bbb;
+  font-style: italic;
+  margin-top: 5px;
+  white-space: nowrap; /* لمنع نزول النص سطر جديد */
+  overflow: hidden;
+  text-overflow: ellipsis; /* إضافة ... إذا كان النص طويل */
+}
+
+/* --- التجاوب مع الموبايل --- */
+@media (max-width: 768px) {
+  .weaponsContainer {
+    width: 95%;
+    padding: 15px;
+  }
+  
+  .weaponCard {
+    height: auto; /* ارتفاع مرن في الموبايل */
+    padding: 20px;
+  }
+
+  .weaponDetail:last-child {
+    white-space: normal; /* السماح بتعدد الأسطر في الموبايل */
+  }
 }

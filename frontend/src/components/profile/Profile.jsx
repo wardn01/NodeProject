@@ -22,7 +22,7 @@ const Profile = ({ setPage }) => {
         const res = await axios.get("http://localhost:8000/user/profile", {
           withCredentials: true,
         });
-        setProfileData(res.data.user);
+        setProfileData(res.data);
       } catch (error) {
         console.error("Error fetching profile data:", error);
         setErrorMessage("Failed to fetch profile data.");

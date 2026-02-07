@@ -1,10 +1,15 @@
 import styles from "./build.module.css";
-import { useState } from "react";
-import axios from "axios";
+import { useState, useRef, useEffect } from "react";
+import { calculateWinChance } from "./utils";
 import Weapon from "../weapon/Weapon";
 import Enemy from "../enemy/Enemy";
+import axios from "axios";
 
 const Build = ({ buildData, refreshBuilds }) => {
+  const fileInputRef = useRef(null);
+
+  const [image, setImage] = useState(buildData.image);
+
   const [stats, setStats] = useState({
     hp: buildData.hp,
     attack: buildData.attack,
@@ -13,7 +18,62 @@ const Build = ({ buildData, refreshBuilds }) => {
 
   const [points, setPoints] = useState(buildData.points);
   const [isModified, setIsModified] = useState(false);
-  const [selectedWeaponId, setSelectedWeaponId] = useState(buildData.weapon_id);
+
+  const [selectedWeapon, setSelectedWeapon] = useState(null);
+  const [selectedEnemy, setSelectedEnemy] = useState(null);
+
+  const [winChance, setWinChance] = useState(0);
+
+  useEffect(() => {
+    if (buildData) {
+      setStats({
+        hp: buildData.hp,
+        attack: buildData.attack,
+        defense: buildData.defense,
+      });
+      setPoints(buildData.points);
+      setImage(buildData.image);
+
+      const fetchDetails = async () => {
+        try {
+          if (buildData.weapon_id) {
+            const wRes = await axios.get(
+              `http://localhost:8000/weapon/${buildData.weapon_id}`,
+              { withCredentials: true },
+            );
+            setSelectedWeapon(wRes.data.weapon);
+          } else {
+            setSelectedWeapon(null);
+          }
+
+          if (buildData.enemy_id) {
+            const eRes = await axios.get(
+              `http://localhost:8000/enemy/${buildData.enemy_id}`,
+              { withCredentials: true },
+            );
+            setSelectedEnemy(eRes.data.enemy);
+          } else {
+            setSelectedEnemy(null);
+          }
+        } catch (err) {
+          console.error("Error fetching details:", err);
+        }
+      };
+      fetchDetails();
+    }
+  }, [buildData]);
+
+  // --- useEffect 2: حساب نسبة الفوز عند أي تغيير ---
+  useEffect(() => {
+    if (selectedEnemy) {
+      const chance = calculateWinChance(stats, selectedWeapon, selectedEnemy);
+      setWinChance(chance);
+    } else {
+      setWinChance(0);
+    }
+  }, [stats, selectedWeapon, selectedEnemy]);
+
+  // --- Handlers ---
 
   const handleStatChange = (stat, operation) => {
     if (operation === "increase") {
@@ -39,12 +99,14 @@ const Build = ({ buildData, refreshBuilds }) => {
         {
           ...stats,
           points,
-          weapon_id: selectedWeaponId,
+          weapon_id: selectedWeapon ? selectedWeapon.id : null,
+          enemy_id: selectedEnemy ? selectedEnemy.id : null,
         },
         { withCredentials: true },
       );
 
       setIsModified(false);
+      refreshBuilds();
     } catch (error) {
       console.error("Error saving build:", error);
     }
@@ -60,6 +122,47 @@ const Build = ({ buildData, refreshBuilds }) => {
       console.error("Error deleting build:", error);
     }
   };
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const previewUrl = URL.createObjectURL(file);
+    setImage(previewUrl);
+
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+      const response = await axios.put(
+        `http://localhost:8000/build/update/${buildData.id}`,
+        formData,
+        {
+          withCredentials: true,
+          headers: { "Content-Type": "multipart/form-data" },
+        },
+      );
+
+      if (response.data.imageUrl) {
+        setImage(response.data.imageUrl);
+      }
+
+      refreshBuilds();
+    } catch (error) {
+      console.error("Error uploading image:", error);
+    }
+  };
+
+  const heroImageStyle = image
+    ? {
+        backgroundImage: `url(${image})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }
+    : {};
+
+  // --- JSX ---
+
   return (
     <div className={styles.buildContainer}>
       <div className={styles.header}>
@@ -78,17 +181,87 @@ const Build = ({ buildData, refreshBuilds }) => {
       </div>
 
       <div className={styles.arena}>
+        {/* Left Side: Enemy */}
         <div className={styles.leftSide}>
-          <Enemy />
+          <Enemy
+            enemyId={selectedEnemy ? selectedEnemy.id : null}
+            onSelect={(enemy) => {
+              setSelectedEnemy(enemy);
+              setIsModified(true);
+            }}
+          />
         </div>
 
+        {/* Center: VS & Win Rate */}
         <div className={styles.vsContainer}>
           <span className={styles.vsText}>VS</span>
+
+          {selectedEnemy && (
+            <div
+              className={styles.winRateContainer}
+              style={{
+                marginTop: "15px",
+                textAlign: "center",
+                width: "100%",
+                padding: "0 10px",
+              }}
+            >
+              <div
+                style={{
+                  color: winChance >= 50 ? "#4cd137" : "#e84118",
+                  fontSize: "1rem",
+                  fontWeight: "bold",
+                  marginBottom: "5px",
+                  fontFamily: "var(--font-family-main)",
+                  textShadow: "1px 1px 0 #000",
+                }}
+              >
+                Win Chance: {winChance}%
+              </div>
+
+              {/* شريط التقدم المرئي */}
+              <div
+                style={{
+                  width: "100%",
+                  height: "8px",
+                  backgroundColor: "#222",
+                  borderRadius: "4px",
+                  overflow: "hidden",
+                  border: "1px solid #444",
+                  boxShadow: "inset 0 0 5px #000",
+                }}
+              >
+                <div
+                  style={{
+                    width: `${winChance}%`,
+                    height: "100%",
+                    backgroundColor: winChance >= 50 ? "#4cd137" : "#e84118",
+                    backgroundImage:
+                      "linear-gradient(45deg, rgba(255,255,255,.15) 25%, transparent 25%, transparent 50%, rgba(255,255,255,.15) 50%, rgba(255,255,255,.15) 75%, transparent 75%, transparent)",
+                    backgroundSize: "1rem 1rem",
+                    transition: "width 0.6s ease-out, background-color 0.3s",
+                  }}
+                />
+              </div>
+            </div>
+          )}
         </div>
 
+        {/* Right Side: Hero Stats & Weapon */}
         <div className={styles.rightSide}>
-          <div className={styles.imagePlaceholder}>Hero Image</div>
-
+          <div
+            className={styles.imagePlaceholder}
+            style={heroImageStyle}
+            onClick={() => fileInputRef.current.click()}
+          >
+            {!image && "Hero Image"}
+          </div>
+          <input
+            type="file"
+            ref={fileInputRef}
+            style={{ display: "none" }}
+            onChange={handleImageUpload}
+          />
           <div className={styles.statsContainer}>
             <div className={styles.statRow}>
               <span>❤️ HP: {stats.hp}</span>
@@ -127,9 +300,9 @@ const Build = ({ buildData, refreshBuilds }) => {
 
           <div className={styles.weaponSection}>
             <Weapon
-              weaponId={selectedWeaponId}
-              onSelect={(newId) => {
-                setSelectedWeaponId(newId);
+              weaponId={selectedWeapon ? selectedWeapon.id : null}
+              onSelect={(weapon) => {
+                setSelectedWeapon(weapon);
                 setIsModified(true);
               }}
             />

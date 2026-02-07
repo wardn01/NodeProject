@@ -12,7 +12,7 @@ const Weapon = ({ weaponId, onSelect }) => {
     setShowWeaponList(false);
 
     if (onSelect) {
-      onSelect(selectedWeapon.id);
+      onSelect(selectedWeapon);
     }
   };
 

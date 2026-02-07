@@ -1,101 +1,129 @@
+/* الحاوية الرئيسية */
 .weaponContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
   width: 100%;
 }
 
+/* الصندوق الأساسي للسلاح (يعمل كزر وكعرض للصورة) */
 .weaponSlot {
+  width: 100%;
+  height: 120px; /* ارتفاع مناسب كبطاقة سلاح */
+  background-color: rgba(0, 0, 0, 0.3);
+  border: 2px dashed var(--color-slate-blue);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* لتوسيط المحتوى في حالة الفراغ */
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  
+  /* خصائص الخلفية للصورة */
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  border: 1px dashed var(--color-border);
-  border-radius: var(--border-radius);
-  padding: 0 20px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  height: 70px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
+/* تأثير التحويم */
 .weaponSlot:hover {
-  background-color: rgba(255, 255, 255, 0.08);
-  border-color: var(--color-primary);
-  border-style: solid;
+  border-color: var(--color-gold);
+  background-color: rgba(0, 0, 0, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
+/* الحالة عندما يكون السلاح مجهزاً (active) */
+.equipped {
+  border: 2px solid var(--color-gold);
+  background-color: rgba(12, 24, 33, 0.8); /* خلفية داكنة لضمان قراءة النص */
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.15);
+}
+
+/* الحالة الفارغة */
 .empty {
-  color: var(--color-text-muted);
+  color: var(--color-light-grey);
 }
 
+/* محتوى البطاقة الداخلي */
 .slotContent {
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 20px;
   width: 100%;
+  height: 100%;
+  padding: 0 25px;
+  z-index: 2; /* ليكون فوق صورة الخلفية */
+  
+  /* تدرج لوني خفيف لجعل النص مقروءاً فوق الصورة */
+  background: linear-gradient(90deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 60%, transparent 100%);
+}
+
+/* تنسيق خاص للمحتوى الفارغ لتوسطه */
+.empty .slotContent {
+  background: none;
+  justify-content: center;
+  gap: 10px;
+}
+
+/* الأيقونات */
+.icon {
+  font-size: 2rem;
+  filter: drop-shadow(0 0 5px var(--color-gold));
 }
 
 .plusIcon {
-  font-size: 1.8rem;
-  margin-right: 10px;
-  font-weight: 300;
+  font-size: 1.5rem;
+  color: var(--color-gold);
+  font-weight: bold;
 }
 
-.placeholder {
-  font-family: var(--font-family-header);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  font-size: 1.2rem;
-  font-weight: 600;
-}
-
-.equipped {
-  border-style: solid;
-  border-color: rgba(255, 255, 255, 0.1);
-  justify-content: flex-start;
-}
-
-.equipped .slotContent {
-  justify-content: flex-start;
-}
-
-.icon {
-  font-size: 2.2rem;
-  margin-right: 15px;
-  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.5));
-}
-
+/* معلومات السلاح */
 .info {
   display: flex;
   flex-direction: column;
+  gap: 5px;
 }
 
 .name {
-  color: var(--color-primary);
+  color: var(--color-gold);
   font-family: var(--font-family-header);
-  font-weight: 700;
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   text-transform: uppercase;
-  line-height: 1.2;
+  letter-spacing: 1px;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.8);
 }
 
 .stat {
-  color: var(--color-text-main);
+  color: var(--color-white);
+  font-family: var(--font-family-main);
   font-size: 1.1rem;
-  font-family: var(--font-family-rpg);
-  margin-top: 3px;
-  opacity: 0.8;
+  font-weight: bold;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.8);
 }
 
+/* النص "Equip Weapon" */
+.placeholder {
+  font-family: var(--font-family-rpg);
+  font-size: 1.2rem;
+  color: var(--color-light-grey);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* النافذة المنبثقة (مطابقة تماماً للعدو) */
 .popupOverlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(12, 24, 33, 0.9);
+  background-color: rgba(0, 0, 0, 0.85);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 2000;
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(8px);
 }

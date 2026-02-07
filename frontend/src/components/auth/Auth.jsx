@@ -44,7 +44,7 @@ function Auth({ setPage }) {
         withCredentials: true,
       });
       if (isLogin) {
-        setPage("mainPage");
+        setPage("buildPage");
       } else {
         setIsLogin(true);
       }

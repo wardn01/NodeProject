@@ -39,7 +39,7 @@ const getWeapon = (req, res) => {
       image: `${req.protocol}://${req.get("host")}/uploads/weapon/${results[0].image}`,
     };
 
-    res.status(200).json({ weapon });
+    res.status(200).json({ weapon: weapon });
   });
 };
 

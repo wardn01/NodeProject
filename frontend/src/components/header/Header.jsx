@@ -7,24 +7,30 @@ import elementAnemo from "../../img/element_anemo.webp";
 export default function Header({ page, setPage }) {
   return (
     <header className={styles.header}>
-      <div className={styles.logoContainer} onClick={() => setPage("mainPage")}>
-        <img src={logo} alt="XIAO Logo" className={styles.logo} />
-        <h1 className={styles.title}>XIAO</h1>
+      <div className={styles.logoContainer} onClick={() => setPage("buildPage")}>
+        <img src={logo} alt="Vision Logo" className={styles.logo} />
+        <h1 className={styles.title}>VISION</h1>
       </div>
 
       <nav className={styles.nav}>
         <ul>
           <li
-            className={page === "mainPage" ? styles.active : ""}
-            onClick={() => setPage("mainPage")}
+            className={page === "buildPage" ? styles.active : ""}
+            onClick={() => setPage("buildPage")}
           >
-            Home
+            Build
           </li>
           <li
             className={page === "profilePage" ? styles.active : ""}
             onClick={() => setPage("profilePage")}
           >
             Profile
+          </li>
+                    <li
+            className={page === "aboutPage" ? styles.active : ""}
+            onClick={() => setPage("aboutPage")}
+          >
+            About
           </li>
         </ul>
       </nav>
