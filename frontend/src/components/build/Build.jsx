@@ -5,22 +5,25 @@ import Weapon from "../weapon/Weapon";
 import Enemy from "../enemy/Enemy";
 import axios from "axios";
 
+/**
+ * build component
+ * @returns build jsx
+ */
 const Build = ({ buildData, refreshBuilds }) => {
-  const fileInputRef = useRef(null);
-
-  const [image, setImage] = useState(buildData.image);
-
   const [stats, setStats] = useState({
     hp: buildData.hp,
     attack: buildData.attack,
     defense: buildData.defense,
+    points: buildData.points,
   });
 
-  const [points, setPoints] = useState(buildData.points);
-  const [isModified, setIsModified] = useState(false);
+  const [isEdited, setIsEdited] = useState(false);
 
   const [selectedWeapon, setSelectedWeapon] = useState(null);
   const [selectedEnemy, setSelectedEnemy] = useState(null);
+
+  const [image, setImage] = useState(buildData.image);
+  const fileInputRef = useRef(null);
 
   const [winChance, setWinChance] = useState(0);
 
@@ -30,8 +33,8 @@ const Build = ({ buildData, refreshBuilds }) => {
         hp: buildData.hp,
         attack: buildData.attack,
         defense: buildData.defense,
+        points: buildData.points,
       });
-      setPoints(buildData.points);
       setImage(buildData.image);
 
       const fetchDetails = async () => {
@@ -63,7 +66,6 @@ const Build = ({ buildData, refreshBuilds }) => {
     }
   }, [buildData]);
 
-  // --- useEffect 2: حساب نسبة الفوز عند أي تغيير ---
   useEffect(() => {
     if (selectedEnemy) {
       const chance = calculateWinChance(stats, selectedWeapon, selectedEnemy);
@@ -77,17 +79,23 @@ const Build = ({ buildData, refreshBuilds }) => {
 
   const handleStatChange = (stat, operation) => {
     if (operation === "increase") {
-      if (points > 0) {
-        setStats({ ...stats, [stat]: stats[stat] + 10 });
-        setPoints(points - 1);
-        setIsModified(true);
+      if (stats.points > 0) {
+        setStats({
+          ...stats,
+          [stat]: stats[stat] + 10,
+          points: stats.points - 1,
+        });
+        setIsEdited(true);
       }
     } else {
       const minValues = { hp: 100, attack: 10, defense: 10 };
       if (stats[stat] > minValues[stat]) {
-        setStats({ ...stats, [stat]: stats[stat] - 10 });
-        setPoints(points + 1);
-        setIsModified(true);
+        setStats({
+          ...stats,
+          [stat]: stats[stat] - 10,
+          points: stats.points + 1,
+        });
+        setIsEdited(true);
       }
     }
   };
@@ -98,14 +106,13 @@ const Build = ({ buildData, refreshBuilds }) => {
         `http://localhost:8000/build/update/${buildData.id}`,
         {
           ...stats,
-          points,
           weapon_id: selectedWeapon ? selectedWeapon.id : null,
           enemy_id: selectedEnemy ? selectedEnemy.id : null,
         },
         { withCredentials: true },
       );
 
-      setIsModified(false);
+      setIsEdited(false);
       refreshBuilds();
     } catch (error) {
       console.error("Error saving build:", error);
@@ -168,12 +175,12 @@ const Build = ({ buildData, refreshBuilds }) => {
       <div className={styles.header}>
         <h2 className={styles.buildTitle}>{buildData.build_name}</h2>
         <div className={styles.headerControls}>
-          {isModified && (
+          {isEdited && (
             <button className={styles.saveButton} onClick={handleSave}>
               💾 SAVE
             </button>
           )}
-          <span className={styles.pointsBadge}>Points: {points}</span>
+          <span className={styles.pointsBadge}>Points: {stats.points}</span>
           <button className={styles.deleteButton} onClick={handleDelete}>
             🗑️
           </button>
@@ -187,7 +194,7 @@ const Build = ({ buildData, refreshBuilds }) => {
             enemyId={selectedEnemy ? selectedEnemy.id : null}
             onSelect={(enemy) => {
               setSelectedEnemy(enemy);
-              setIsModified(true);
+              setIsEdited(true);
             }}
           />
         </div>
