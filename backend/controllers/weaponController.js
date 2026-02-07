@@ -10,7 +10,12 @@ const getWeapons = (req, res) => {
       return res.status(500).json({ message: "Server error fetching weapons" });
     }
 
-    res.status(200).json({ weapons: results });
+    const weapon = results.map((weapon) => ({
+      ...weapon,
+      image: `${req.protocol}://${req.get("host")}/uploads/weapon/${weapon.image}`,
+    }));
+
+    res.status(200).json({ weapons: weapon });
   });
 };
 
@@ -18,15 +23,23 @@ const getWeapons = (req, res) => {
 const getWeapon = (req, res) => {
   const weaponId = req.params.id;
   const query = "SELECT * FROM weapons WHERE id = ?";
+
   db.query(query, [weaponId], (err, results) => {
     if (err) {
       console.error("Error fetching weapon:", err);
       return res.status(500).json({ message: "Server error fetching weapon" });
     }
+
     if (results.length === 0) {
       return res.status(404).json({ message: "Weapon not found" });
     }
-    res.status(200).json({ weapon: results[0] });
+
+    const weapon = {
+      ...results[0],
+      image: `${req.protocol}://${req.get("host")}/uploads/weapon/${results[0].image}`,
+    };
+
+    res.status(200).json({ weapon });
   });
 };
 

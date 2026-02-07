@@ -35,10 +35,13 @@ const Weapon = ({ weaponId, onSelect }) => {
     }
   }, [weaponId]);
 
+  const weaponImage = weaponData ? weaponData.image : null;
+
   return (
     <div className={styles.weaponContainer}>
       <div
         className={`${styles.weaponSlot} ${weaponData ? styles.equipped : styles.empty}`}
+        style={{ backgroundImage: `url(${weaponImage})` }}
         onClick={() => setShowWeaponList(true)}
       >
         {weaponData ? (
