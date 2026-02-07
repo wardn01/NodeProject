@@ -6,8 +6,10 @@ import Enemy from "../enemy/Enemy";
 import axios from "axios";
 
 /**
- * build component
- * @returns build jsx
+ * Build component
+ * @param {object} buildData - Data for the build to display
+ * @param {function} refreshBuilds - Callback function to refresh the list of builds
+ * @returns JSX for the build component
  */
 const Build = ({ buildData, refreshBuilds }) => {
   const [stats, setStats] = useState({
@@ -15,6 +17,7 @@ const Build = ({ buildData, refreshBuilds }) => {
     attack: buildData.attack,
     defense: buildData.defense,
     points: buildData.points,
+    image: buildData.image,
   });
 
   const [isEdited, setIsEdited] = useState(false);
@@ -22,11 +25,11 @@ const Build = ({ buildData, refreshBuilds }) => {
   const [selectedWeapon, setSelectedWeapon] = useState(null);
   const [selectedEnemy, setSelectedEnemy] = useState(null);
 
-  const [image, setImage] = useState(buildData.image);
   const fileInputRef = useRef(null);
 
   const [winChance, setWinChance] = useState(0);
 
+  // Fetch weapon and enemy details when buildData changes
   useEffect(() => {
     if (buildData) {
       setStats({
@@ -34,27 +37,27 @@ const Build = ({ buildData, refreshBuilds }) => {
         attack: buildData.attack,
         defense: buildData.defense,
         points: buildData.points,
+        image: buildData.image,
       });
-      setImage(buildData.image);
 
       const fetchDetails = async () => {
         try {
           if (buildData.weapon_id) {
-            const wRes = await axios.get(
+            const responseData = await axios.get(
               `http://localhost:8000/weapon/${buildData.weapon_id}`,
               { withCredentials: true },
             );
-            setSelectedWeapon(wRes.data.weapon);
+            setSelectedWeapon(responseData.data.weapon);
           } else {
             setSelectedWeapon(null);
           }
 
           if (buildData.enemy_id) {
-            const eRes = await axios.get(
+            const responseData = await axios.get(
               `http://localhost:8000/enemy/${buildData.enemy_id}`,
               { withCredentials: true },
             );
-            setSelectedEnemy(eRes.data.enemy);
+            setSelectedEnemy(responseData.data.enemy);
           } else {
             setSelectedEnemy(null);
           }
@@ -66,6 +69,7 @@ const Build = ({ buildData, refreshBuilds }) => {
     }
   }, [buildData]);
 
+  // Recalculate win chance whenever stats, selected weapon, or selected enemy changes
   useEffect(() => {
     if (selectedEnemy) {
       const chance = calculateWinChance(stats, selectedWeapon, selectedEnemy);
@@ -75,8 +79,7 @@ const Build = ({ buildData, refreshBuilds }) => {
     }
   }, [stats, selectedWeapon, selectedEnemy]);
 
-  // --- Handlers ---
-
+  // Handle stat changes (increase/decrease)
   const handleStatChange = (stat, operation) => {
     if (operation === "increase") {
       if (stats.points > 0) {
@@ -100,6 +103,7 @@ const Build = ({ buildData, refreshBuilds }) => {
     }
   };
 
+  // Handle saving the build
   const handleSave = async () => {
     try {
       await axios.put(
@@ -119,6 +123,7 @@ const Build = ({ buildData, refreshBuilds }) => {
     }
   };
 
+  // Handle deleting the build
   const handleDelete = async () => {
     try {
       await axios.delete(`http://localhost:8000/build/delete/${buildData.id}`, {
@@ -130,18 +135,19 @@ const Build = ({ buildData, refreshBuilds }) => {
     }
   };
 
+  // Handle image upload
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
     const previewUrl = URL.createObjectURL(file);
-    setImage(previewUrl);
+    setStats((prevStats) => ({ ...prevStats, image: previewUrl }));
 
     const formData = new FormData();
     formData.append("image", file);
 
     try {
-      const response = await axios.put(
+      const responseData = await axios.put(
         `http://localhost:8000/build/update/${buildData.id}`,
         formData,
         {
@@ -150,8 +156,11 @@ const Build = ({ buildData, refreshBuilds }) => {
         },
       );
 
-      if (response.data.imageUrl) {
-        setImage(response.data.imageUrl);
+      if (responseData.data.imageUrl) {
+        setStats((prevStats) => ({
+          ...prevStats,
+          image: responseData.data.imageUrl,
+        }));
       }
 
       refreshBuilds();
@@ -160,15 +169,9 @@ const Build = ({ buildData, refreshBuilds }) => {
     }
   };
 
-  const heroImageStyle = image
-    ? {
-        backgroundImage: `url(${image})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }
+  const heroImageStyle = stats.image
+    ? { backgroundImage: `url(${stats.image})` }
     : {};
-
-  // --- JSX ---
 
   return (
     <div className={styles.buildContainer}>
@@ -188,7 +191,6 @@ const Build = ({ buildData, refreshBuilds }) => {
       </div>
 
       <div className={styles.arena}>
-        {/* Left Side: Enemy */}
         <div className={styles.leftSide}>
           <Enemy
             enemyId={selectedEnemy ? selectedEnemy.id : null}
@@ -199,69 +201,34 @@ const Build = ({ buildData, refreshBuilds }) => {
           />
         </div>
 
-        {/* Center: VS & Win Rate */}
         <div className={styles.vsContainer}>
           <span className={styles.vsText}>VS</span>
 
           {selectedEnemy && (
-            <div
-              className={styles.winRateContainer}
-              style={{
-                marginTop: "15px",
-                textAlign: "center",
-                width: "100%",
-                padding: "0 10px",
-              }}
-            >
+            <div className={styles.winRateContainer}>
               <div
-                style={{
-                  color: winChance >= 50 ? "#4cd137" : "#e84118",
-                  fontSize: "1rem",
-                  fontWeight: "bold",
-                  marginBottom: "5px",
-                  fontFamily: "var(--font-family-main)",
-                  textShadow: "1px 1px 0 #000",
-                }}
+                className={`${styles.winRateText} ${winChance >= 50 ? styles.highChance : styles.lowChance}`}
               >
                 Win Chance: {winChance}%
               </div>
 
-              {/* شريط التقدم المرئي */}
-              <div
-                style={{
-                  width: "100%",
-                  height: "8px",
-                  backgroundColor: "#222",
-                  borderRadius: "4px",
-                  overflow: "hidden",
-                  border: "1px solid #444",
-                  boxShadow: "inset 0 0 5px #000",
-                }}
-              >
+              <div className={styles.winRateBarTrack}>
                 <div
-                  style={{
-                    width: `${winChance}%`,
-                    height: "100%",
-                    backgroundColor: winChance >= 50 ? "#4cd137" : "#e84118",
-                    backgroundImage:
-                      "linear-gradient(45deg, rgba(255,255,255,.15) 25%, transparent 25%, transparent 50%, rgba(255,255,255,.15) 50%, rgba(255,255,255,.15) 75%, transparent 75%, transparent)",
-                    backgroundSize: "1rem 1rem",
-                    transition: "width 0.6s ease-out, background-color 0.3s",
-                  }}
+                  className={`${styles.winRateBarFill} ${winChance >= 50 ? styles.fillHigh : styles.fillLow}`}
+                  style={{ width: `${winChance}%` }}
                 />
               </div>
             </div>
           )}
         </div>
 
-        {/* Right Side: Hero Stats & Weapon */}
         <div className={styles.rightSide}>
           <div
             className={styles.imagePlaceholder}
             style={heroImageStyle}
             onClick={() => fileInputRef.current.click()}
           >
-            {!image && "Hero Image"}
+            {!stats.image && "Hero Image"}
           </div>
           <input
             type="file"
@@ -273,10 +240,16 @@ const Build = ({ buildData, refreshBuilds }) => {
             <div className={styles.statRow}>
               <span>❤️ HP: {stats.hp}</span>
               <div className={styles.controls}>
-                <button onClick={() => handleStatChange("hp", "decrease")}>
+                <button
+                  className={styles.controlButton}
+                  onClick={() => handleStatChange("hp", "decrease")}
+                >
                   -
                 </button>
-                <button onClick={() => handleStatChange("hp", "increase")}>
+                <button
+                  className={styles.controlButton}
+                  onClick={() => handleStatChange("hp", "increase")}
+                >
                   +
                 </button>
               </div>
@@ -284,10 +257,16 @@ const Build = ({ buildData, refreshBuilds }) => {
             <div className={styles.statRow}>
               <span>⚔️ ATK: {stats.attack}</span>
               <div className={styles.controls}>
-                <button onClick={() => handleStatChange("attack", "decrease")}>
+                <button
+                  className={styles.controlButton}
+                  onClick={() => handleStatChange("attack", "decrease")}
+                >
                   -
                 </button>
-                <button onClick={() => handleStatChange("attack", "increase")}>
+                <button
+                  className={styles.controlButton}
+                  onClick={() => handleStatChange("attack", "increase")}
+                >
                   +
                 </button>
               </div>
@@ -295,10 +274,16 @@ const Build = ({ buildData, refreshBuilds }) => {
             <div className={styles.statRow}>
               <span>🛡️ DEF: {stats.defense}</span>
               <div className={styles.controls}>
-                <button onClick={() => handleStatChange("defense", "decrease")}>
+                <button
+                  className={styles.controlButton}
+                  onClick={() => handleStatChange("defense", "decrease")}
+                >
                   -
                 </button>
-                <button onClick={() => handleStatChange("defense", "increase")}>
+                <button
+                  className={styles.controlButton}
+                  onClick={() => handleStatChange("defense", "increase")}
+                >
                   +
                 </button>
               </div>
@@ -310,7 +295,7 @@ const Build = ({ buildData, refreshBuilds }) => {
               weaponId={selectedWeapon ? selectedWeapon.id : null}
               onSelect={(weapon) => {
                 setSelectedWeapon(weapon);
-                setIsModified(true);
+                setIsEdited(true);
               }}
             />
           </div>

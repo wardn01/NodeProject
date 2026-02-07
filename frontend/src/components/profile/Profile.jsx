@@ -1,9 +1,13 @@
 import styles from "./profile.module.css";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { AiOutlineEye } from "react-icons/ai";
-import { AiOutlineEyeInvisible } from "react-icons/ai";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
+/**
+ * Profile component to display and edit user profile information
+ * @param {function} setPage - Function to change the current page (used for logout)
+ * @returns JSX for the profile component
+ */
 const Profile = ({ setPage }) => {
   const [profileData, setProfileData] = useState(null);
   const [profileDataToEdit, setProfileDataToEdit] = useState({
@@ -15,7 +19,7 @@ const Profile = ({ setPage }) => {
   const [successMessage, setSuccessMessage] = useState("");
   const [eyeInvisible, setEyeInvisible] = useState(true);
 
-  // Fetch user profile data on component mount
+  // Fetch profile data on component mount
   useEffect(() => {
     const getProfileData = async () => {
       try {
@@ -23,6 +27,10 @@ const Profile = ({ setPage }) => {
           withCredentials: true,
         });
         setProfileData(res.data);
+        setProfileDataToEdit((prev) => ({
+          ...prev,
+          nickname: res.data.nickname || "",
+        }));
       } catch (error) {
         console.error("Error fetching profile data:", error);
         setErrorMessage("Failed to fetch profile data.");
@@ -46,7 +54,7 @@ const Profile = ({ setPage }) => {
     }
   };
 
-  // Handle profile update
+  // Handle profile update (nickname or password)
   const handleUpdateProfile = async () => {
     try {
       await axios.post(
@@ -70,6 +78,7 @@ const Profile = ({ setPage }) => {
         }));
       }
       setIsEditing("nothing");
+      setProfileDataToEdit((prev) => ({ ...prev, password: "" }));
     } catch (error) {
       if (error?.response?.data?.message) {
         setErrorMessage(error.response.data.message);
@@ -80,35 +89,38 @@ const Profile = ({ setPage }) => {
     }
   };
 
-  // Handle edit button click
+  // Handle Edit Button Click
   const handleBtnEditClick = (editMode) => {
-    if (editMode !== "nothing") {
-      setProfileDataToEdit({
-        nickname: profileData.nickname,
-        password: "",
-      });
+    if (isEditing !== "nothing" && isEditing !== editMode) {
+      handlebtnCancelEditClick();
     }
 
-    if (isEditing === editMode) {
+    setIsEditing(editMode);
+    setErrorMessage("");
+    setSuccessMessage("");
+
+    if (editMode === "nickname") {
+      setProfileDataToEdit((prev) => ({
+        ...prev,
+        nickname: profileData.nickname,
+      }));
     } else {
-      setIsEditing(editMode);
-      setErrorMessage("");
-      setSuccessMessage("");
+      setProfileDataToEdit((prev) => ({ ...prev, password: "" }));
     }
   };
 
-  // Handle cancel edit button click
+  // Handle Cancel Edit Button Click
   const handlebtnCancelEditClick = () => {
     setIsEditing("nothing");
     setErrorMessage("");
     setSuccessMessage("");
     setProfileDataToEdit({
-      nickname: profileData.nickname,
+      nickname: profileData?.nickname || "",
       password: "",
     });
   };
 
-  // Handle input changes for profile editing
+  // Handle input changes for nickname and password
   const handleChange = (e) => {
     setProfileDataToEdit({
       ...profileDataToEdit,
@@ -116,119 +128,118 @@ const Profile = ({ setPage }) => {
     });
   };
 
+  // Component for rendering action buttons (Edit, Save, Cancel)
+  const ActionButtons = ({ mode }) => {
+    if (isEditing === mode) {
+      return (
+        <div className={styles.editButtons}>
+          <span
+            className={styles.editButton}
+            onClick={handleUpdateProfile}
+            title="Save"
+          >
+            ✔️
+          </span>
+          <span
+            className={styles.editButton}
+            onClick={handlebtnCancelEditClick}
+            title="Cancel"
+          >
+            ✖️
+          </span>
+        </div>
+      );
+    }
+    return (
+      <span
+        className={styles.editButton}
+        onClick={() => handleBtnEditClick(mode)}
+        title="Edit"
+      >
+        ✏️
+      </span>
+    );
+  };
+
   return (
     <div className={styles.profileContainer}>
       <div className={styles.profileHeader}>
-        <p className={styles.profileTitle}>Profile</p>
+        <h2 className={styles.profileTitle}>My Profile</h2>
         <div className={styles.avatar}>
-          {profileData?.nickname?.charAt(0).toUpperCase()}
+          {profileData?.nickname?.charAt(0).toUpperCase() || "?"}
         </div>
       </div>
 
-      <div className={styles.infoRow}>
-        <div className={styles.profileCard}>
-          <div className={styles.infoGroup}>
-            <p className={styles.infoLabel}>Username</p>
-            <p className={styles.infoValue}>
-              {profileData?.username || "Loading..."}
-            </p>
-          </div>
-          <div className={styles.infoGroup}>
-            <p className={styles.infoLabel}>Email Address</p>
-            <p className={styles.infoValue}>
-              {profileData?.email || "Loading..."}
-            </p>
+      <div className={styles.profileCard}>
+        <div className={styles.infoGroup}>
+          <label className={styles.infoLabel}>Username</label>
+          <div className={styles.infoValue}>
+            {profileData?.username || "Loading..."}
           </div>
         </div>
-      </div>
-      <div className={styles.infoGroup}>
-        <div className={styles.editProfile}>
-          <p className={styles.infoLabel}>Nickname</p>
-          {isEditing === "nickname" ? (
-            <div className={styles.editButtons}>
-              <p className={styles.editButton} onClick={handleUpdateProfile}>
-                ✔️
-              </p>
-              <p
-                className={styles.editButton}
-                onClick={handlebtnCancelEditClick}
-              >
-                ✖️
-              </p>
-            </div>
-          ) : (
-            <p
-              className={styles.editButton}
-              onClick={() => handleBtnEditClick("nickname")}
-            >
-              ✏️
-            </p>
-          )}
+
+        <div className={styles.infoGroup}>
+          <label className={styles.infoLabel}>Email Address</label>
+          <div className={styles.infoValue}>
+            {profileData?.email || "Loading..."}
+          </div>
         </div>
 
-        <p className={styles.infoValue}>
-          {isEditing === "nickname" ? (
-            <input
-              className={styles.editInput}
-              type="text"
-              name="nickname"
-              placeholder="New Nick Name"
-              value={profileDataToEdit.nickname}
-              onChange={handleChange}
-            />
-          ) : (
-            profileData?.nickname || "Loading..."
-          )}
-        </p>
-      </div>
+        <div className={styles.infoGroup}>
+          <div className={styles.labelWithEdit}>
+            <label className={styles.infoLabel}>Nickname</label>
+            <ActionButtons mode="nickname" />
+          </div>
 
-      <div className={styles.infoGroup}>
-        <div className={styles.editProfile}>
-          <p className={styles.infoLabel}>Password</p>
-          {isEditing === "password" ? (
-            <div className={styles.editButtons}>
-              <p className={styles.editButton} onClick={handleUpdateProfile}>
-                ✔️
-              </p>
-              <p
-                className={styles.editButton}
-                onClick={handlebtnCancelEditClick}
-              >
-                ✖️
-              </p>
-            </div>
-          ) : (
-            <p
-              className={styles.editButton}
-              onClick={() => handleBtnEditClick("password")}
-            >
-              ✏️
-            </p>
-          )}
-        </div>
-
-        <p className={styles.infoValue}>
-          {isEditing === "password" ? (
-            <div className={styles.passwordInputContainer}>
+          <div className={styles.valueContainer}>
+            {isEditing === "nickname" ? (
               <input
                 className={styles.editInput}
-                type={eyeInvisible ? "password" : "text"}
-                name="password"
-                placeholder="New Password"
-                value={profileDataToEdit.password}
+                type="text"
+                name="nickname"
+                placeholder="Enter new nickname"
+                value={profileDataToEdit.nickname}
                 onChange={handleChange}
+                autoFocus
               />
-              <span
-                className={styles.passwordToggleIcon}
-                onClick={() => setEyeInvisible(!eyeInvisible)}
-              >
-                {eyeInvisible ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
-              </span>
-            </div>
-          ) : (
-            "********"
-          )}
-        </p>
+            ) : (
+              <div className={styles.infoValue}>
+                {profileData?.nickname || "Loading..."}
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className={styles.infoGroup}>
+          <div className={styles.labelWithEdit}>
+            <label className={styles.infoLabel}>Password</label>
+            <ActionButtons mode="password" />
+          </div>
+
+          <div className={styles.valueContainer}>
+            {isEditing === "password" ? (
+              <div className={styles.passwordInputContainer}>
+                <input
+                  className={styles.editInput}
+                  type={eyeInvisible ? "password" : "text"}
+                  name="password"
+                  placeholder="New Password"
+                  value={profileDataToEdit.password}
+                  onChange={handleChange}
+                  autoFocus
+                />
+                <span
+                  className={styles.passwordToggleIcon}
+                  onClick={() => setEyeInvisible(!eyeInvisible)}
+                >
+                  {eyeInvisible ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
+                </span>
+              </div>
+            ) : (
+              <div className={styles.infoValue}>••••••••</div>
+            )}
+          </div>
+        </div>
       </div>
 
       {successMessage && (

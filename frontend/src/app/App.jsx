@@ -17,7 +17,7 @@ export default function App() {
 
       <Main page={page} setPage={setPage} />
 
-      {page !== "authPage" && <Footer prog=" Vision" year="2026" />}
+      {page !== "authPage" && <Footer />}
     </div>
   );
 }

@@ -1,20 +1,29 @@
 .footer {
   width: 100%;
-  padding: 25px 0;
-  background-color: var(--color-deep-blue);
-  border-top: 1px solid var(--color-gold);
+  padding: 20px 0;
+  background-color: rgb(4, 6, 9);
+  border-top: 1px solid var(--color-slate-blue);
   display: flex;
   justify-content: center;
   align-items: center;
   margin-top: auto;
+  position: relative;
+  z-index: 10;
+  box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.3);
 }
 
 .footer p {
-  color: var(--color-light-grey);
-  font-family: var(--font-family-header);
-  font-size: 1.2rem;
-  letter-spacing: 2px;
-  text-transform: uppercase;
   margin: 0;
-  opacity: 0.8;
+  color: var(--color-light-grey);
+  font-family: var(--font-family-main);
+  font-size: 1.2rem;
+  opacity: 0.7;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+}
+
+.footer:hover p {
+  opacity: 1;
+  color: var(--color-white);
+  text-shadow: 0 0 5px var(--color-slate-blue);
 }

@@ -4,15 +4,19 @@ import axios from "axios";
 import Build from "../build/Build";
 import CreateBuild from "../createBuild/CreateBuild";
 
+/**
+ * Builds component to display a list of builds and allow creating new builds
+ * @returns JSX for the builds component
+ */
 const Builds = () => {
   const [builds, setBuilds] = useState([]);
 
   const fetchBuilds = async () => {
     try {
-      const buildsData = await axios.get("http://localhost:8000/build/all", {
+      const responseData = await axios.get("http://localhost:8000/build/all", {
         withCredentials: true,
       });
-      setBuilds(buildsData.data.builds);
+      setBuilds(responseData.data.builds);
     } catch (error) {
       console.error("Error fetching builds:", error);
     }
@@ -24,12 +28,19 @@ const Builds = () => {
   return (
     <div className={styles.buildsContainer}>
       <div className={styles.headerContainer}>
-        <h2 className={styles.buildsTitle}>Your Builds</h2>
+        <h2 className={styles.buildsTitle}>
+          <span className={styles.buildsTitleIcon}>⚔️</span>Your Builds
+        </h2>
         <CreateBuild onBuildCreated={fetchBuilds} />
       </div>
 
       {builds.length === 0 ? (
-        <p className={styles.noBuildsText}>No builds available.</p>
+        <div className={styles.noBuildsContainer}>
+          <p className={styles.noBuildsTitle}>No builds available.</p>
+          <p className={styles.noBuildsSubtitle}>
+            Create a new build to start your journey!
+          </p>
+        </div>
       ) : (
         builds.map((build) => (
           <Build key={build.id} buildData={build} refreshBuilds={fetchBuilds} />

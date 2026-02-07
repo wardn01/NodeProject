@@ -1,12 +1,19 @@
 import styles from "./weapon.module.css";
 import { useState, useEffect } from "react";
-import Weapons from "../weapons/Weapons";
 import axios from "axios";
+import Weapons from "../weapons/Weapons";
 
+/**
+ * Weapon component
+ * @param {number} weaponId - ID of the weapon to display
+ * @param {function} onSelect - Callback function when a weapon is selected
+ * @returns JSX for the weapon component
+ */
 const Weapon = ({ weaponId, onSelect }) => {
   const [weaponData, setWeaponData] = useState(null);
   const [showWeaponList, setShowWeaponList] = useState(false);
 
+  // Handle weapon selection from the list
   const handleWeaponSelection = (selectedWeapon) => {
     setWeaponData(selectedWeapon);
     setShowWeaponList(false);
@@ -16,25 +23,27 @@ const Weapon = ({ weaponId, onSelect }) => {
     }
   };
 
+  // Fetch weapon details when weaponId changes
   useEffect(() => {
     if (weaponId) {
-      const fetchWeaponDetails = async () => {
+      const fetchWeapon = async () => {
         try {
-          const response = await axios.get(
+          const responseData = await axios.get(
             `http://localhost:8000/weapon/${weaponId}`,
             { withCredentials: true },
           );
-          setWeaponData(response.data.weapon);
+          setWeaponData(responseData.data.weapon);
         } catch (error) {
           console.error("Error fetching weapon details:", error);
         }
       };
-      fetchWeaponDetails();
+      fetchWeapon();
     } else {
       setWeaponData(null);
     }
   }, [weaponId]);
 
+  // Determine the weapon image to display
   const weaponImage = weaponData ? weaponData.image : null;
 
   return (

@@ -1,12 +1,19 @@
 import styles from "./enemy.module.css";
 import { useState, useEffect } from "react";
-import Enemies from "../enemies/Enemies";
 import axios from "axios";
+import Enemies from "../enemies/Enemies";
 
+/**
+ * Enemy component
+ * @param {number} enemyId - ID of the enemy to display details for
+ * @param {function} onSelect - Callback function when an enemy is selected
+ * @returns JSX for the enemy component
+ */
 const Enemy = ({ enemyId, onSelect }) => {
   const [enemyData, setEnemyData] = useState(null);
   const [showEnemyList, setShowEnemyList] = useState(false);
 
+  // Handle enemy selection from the list
   const handleEnemySelection = (selectedEnemy) => {
     setEnemyData(selectedEnemy);
     setShowEnemyList(false);
@@ -15,60 +22,45 @@ const Enemy = ({ enemyId, onSelect }) => {
     }
   };
 
+  // Fetch enemy details when enemyId changes
   useEffect(() => {
     if (enemyId) {
-      const fetchEnemyDetails = async () => {
+      const fetchEnemy = async () => {
         try {
-          const response = await axios.get(
+          const responseData = await axios.get(
             `http://localhost:8000/enemy/${enemyId}`,
             { withCredentials: true },
           );
-          setEnemyData(response.data.enemy);
+          setEnemyData(responseData.data.enemy);
         } catch (error) {
           console.error("Error fetching enemy details:", error);
         }
       };
-      fetchEnemyDetails();
+      fetchEnemy();
     } else {
       setEnemyData(null);
     }
   }, [enemyId]);
 
-  // تجهيز ستايل الصورة ديناميكياً
-  const placeholderStyle = enemyData?.image
-    ? {
-        backgroundImage: `url(${enemyData.image})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-      }
-    : {};
-
   return (
     <div className={styles.enemyContainer}>
-      {/* تم ربط كلاس active هنا ليظهر التوهج عند اختيار وحش */}
       <div
         className={`${styles.imagePlaceholder} ${enemyData ? styles.active : ""}`}
-        style={placeholderStyle}
+        style={
+          enemyData?.image ? { backgroundImage: `url(${enemyData.image})` } : {}
+        }
       >
         {!enemyData && "Enemy Image"}
       </div>
-
-      <button
-        className={styles.selectButton}
-        onClick={() => setShowEnemyList(true)}
-      >
-        {enemyData ? "CHANGE ADVERSARY" : "SELECT AN ENEMY"}
-      </button>
 
       <div className={styles.enemyCard}>
         {enemyData ? (
           <div className={styles.enemyInfo}>
             <h2 className={styles.enemyName}>{enemyData.name}</h2>
             <div className={styles.stats}>
-              <p>❤️ HP: {enemyData.hp}</p>
-              <p>⚔️ ATK: {enemyData.attack}</p>
-              <p>🛡️ DEF: {enemyData.defense}</p>
+              <p className={styles.enemyDetail}>❤️ HP: {enemyData.hp}</p>
+              <p className={styles.enemyDetail}>⚔️ ATK: {enemyData.attack}</p>
+              <p className={styles.enemyDetail}>🛡️ DEF: {enemyData.defense}</p>
               <p className={styles.totalPower}>
                 🔥 Power: {enemyData.total_power}
               </p>
@@ -78,6 +70,13 @@ const Enemy = ({ enemyId, onSelect }) => {
           <p className={styles.placeholderText}>No enemy selected yet.</p>
         )}
       </div>
+
+      <button
+        className={styles.selectButton}
+        onClick={() => setShowEnemyList(true)}
+      >
+        {enemyData ? "CHANGE ADVERSARY" : "SELECT AN ENEMY"}
+      </button>
 
       {showEnemyList && (
         <div className={styles.popupOverlay}>

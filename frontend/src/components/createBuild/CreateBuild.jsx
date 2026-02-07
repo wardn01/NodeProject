@@ -2,22 +2,28 @@ import styles from "./createBuild.module.css";
 import { useState } from "react";
 import axios from "axios";
 
+/**
+ * CreateBuild component
+ * @param {function} onBuildCreated - Callback function when a build is created
+ * @returns JSX for the create build component
+ */
 const CreateBuild = ({ onBuildCreated }) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
+  // Handle the creation of a new build
   const handleCreateBuild = async () => {
     setErrorMessage("");
     setSuccessMessage("");
 
     try {
-      const res = await axios.post(
+      const responseData = await axios.post(
         "http://localhost:8000/build/create",
         {},
         { withCredentials: true },
       );
 
-      if (res.status === 201) {
+      if (responseData.status === 201) {
         setSuccessMessage("Build created successfully!");
         onBuildCreated();
         setTimeout(() => setSuccessMessage(""), 3000);

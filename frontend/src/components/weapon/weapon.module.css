@@ -1,4 +1,3 @@
-/* الحاوية الرئيسية */
 .weaponContainer {
   display: flex;
   flex-direction: column;
@@ -6,28 +5,24 @@
   width: 100%;
 }
 
-/* الصندوق الأساسي للسلاح (يعمل كزر وكعرض للصورة) */
 .weaponSlot {
   width: 100%;
-  height: 120px; /* ارتفاع مناسب كبطاقة سلاح */
+  height: 100px;
   background-color: rgba(0, 0, 0, 0.3);
   border: 2px dashed var(--color-slate-blue);
   border-radius: 12px;
   display: flex;
   align-items: center;
-  justify-content: center; /* لتوسيط المحتوى في حالة الفراغ */
+  justify-content: center;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
-  
-  /* خصائص الخلفية للصورة */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
 }
 
-/* تأثير التحويم */
 .weaponSlot:hover {
   border-color: var(--color-gold);
   background-color: rgba(0, 0, 0, 0.4);
@@ -35,19 +30,17 @@
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
-/* الحالة عندما يكون السلاح مجهزاً (active) */
 .equipped {
   border: 2px solid var(--color-gold);
-  background-color: rgba(12, 24, 33, 0.8); /* خلفية داكنة لضمان قراءة النص */
+  background-color: rgba(12, 24, 33, 0.85);
   box-shadow: 0 0 15px rgba(255, 215, 0, 0.15);
 }
 
-/* الحالة الفارغة */
 .empty {
   color: var(--color-light-grey);
+  border-style: dashed;
 }
 
-/* محتوى البطاقة الداخلي */
 .slotContent {
   display: flex;
   align-items: center;
@@ -55,36 +48,42 @@
   width: 100%;
   height: 100%;
   padding: 0 25px;
-  z-index: 2; /* ليكون فوق صورة الخلفية */
-  
-  /* تدرج لوني خفيف لجعل النص مقروءاً فوق الصورة */
-  background: linear-gradient(90deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 60%, transparent 100%);
+  z-index: 2;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.95) 0%,
+    rgba(0, 0, 0, 0.5) 60%,
+    transparent 100%
+  );
 }
 
-/* تنسيق خاص للمحتوى الفارغ لتوسطه */
 .empty .slotContent {
   background: none;
   justify-content: center;
-  gap: 10px;
+  flex-direction: column;
+  gap: 8px;
 }
 
-/* الأيقونات */
 .icon {
   font-size: 2rem;
   filter: drop-shadow(0 0 5px var(--color-gold));
 }
 
 .plusIcon {
-  font-size: 1.5rem;
-  color: var(--color-gold);
+  font-size: 2rem;
+  color: var(--color-slate-blue);
   font-weight: bold;
+  transition: color 0.3s ease;
 }
 
-/* معلومات السلاح */
+.weaponSlot:hover .plusIcon {
+  color: var(--color-gold);
+}
+
 .info {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 4px;
 }
 
 .name {
@@ -93,18 +92,17 @@
   font-size: 1.4rem;
   text-transform: uppercase;
   letter-spacing: 1px;
-  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.8);
+  text-shadow: 2px 2px 0 var(--color-black);
 }
 
 .stat {
   color: var(--color-white);
   font-family: var(--font-family-main);
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   font-weight: bold;
-  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.8);
+  text-shadow: 1px 1px 0 var(--color-black);
 }
 
-/* النص "Equip Weapon" */
 .placeholder {
   font-family: var(--font-family-rpg);
   font-size: 1.2rem;
@@ -113,14 +111,13 @@
   letter-spacing: 1px;
 }
 
-/* النافذة المنبثقة (مطابقة تماماً للعدو) */
 .popupOverlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.85);
+  background-color: rgba(12, 24, 33, 0.9);
   display: flex;
   justify-content: center;
   align-items: center;

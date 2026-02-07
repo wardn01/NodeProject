@@ -12,24 +12,23 @@
 .headerContainer {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  border-bottom: 3px solid var(--color-white);
-  padding-bottom: 15px;
-  margin-bottom: 20px;
+  justify-content: center;
+  gap: 40px;
+  width: fit-content;
+  min-width: 300px;
+  margin: 0 auto 20px auto;
   position: sticky;
   top: 0;
   z-index: 10;
-  background: linear-gradient(
-    to bottom,
-    #0f161e 0%,
-    #0f161e 80%,
-    transparent 100%
-  );
+  background-color: transparent;
   padding-top: 10px;
+  position: relative;
+  padding-bottom: 15px;
+  border-bottom: 3px solid var(--color-white);
 }
 
 .buildsTitle {
-  color: var(--color-gold);
+  color: var(--color-white);
   font-size: 2.5rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -42,18 +41,18 @@
   gap: 15px;
 }
 
-.buildsTitle::before {
-  content: "⚔️";
+.buildsTitleIcon {
   font-size: 2rem;
   filter: drop-shadow(0 0 5px var(--color-gold));
 }
 
-.noBuildsText {
-  color: var(--color-light-grey);
-  text-align: center;
-  font-size: 1.5rem;
+.buildsTitleIcon {
+  font-size: 2rem;
+  filter: drop-shadow(0 0 5px var(--color-gold));
+}
+
+.noBuildsContainer {
   margin-top: 50px;
-  font-family: var(--font-family-main);
   background: rgba(0, 0, 0, 0.3);
   padding: 40px;
   border-radius: 12px;
@@ -62,13 +61,22 @@
   flex-direction: column;
   align-items: center;
   gap: 15px;
+  text-align: center;
 }
 
-.noBuildsText::after {
-  content: "Create a new build to start your journey!";
-  font-size: 1rem;
+.noBuildsTitle {
+  color: var(--color-light-grey);
+  font-size: 1.7rem;
+  font-family: var(--font-family-main);
+  margin: 0;
+}
+
+.noBuildsSubtitle {
+  font-size: 1.3rem;
   color: #888;
   font-style: italic;
+  font-family: var(--font-family-main);
+  margin: 0;
 }
 
 @media (max-width: 768px) {
@@ -78,8 +86,8 @@
   }
 
   .headerContainer {
-    flex-direction: row;
-    align-items: center;
+    flex-direction: column;
+    gap: 15px;
   }
 
   .buildsTitle {

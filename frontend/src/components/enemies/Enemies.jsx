@@ -2,16 +2,26 @@ import styles from "./enemies.module.css";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
+/**
+ * Enemies component
+ * @param {function} onSelect - Callback when an enemy is selected
+ * @param {function} onClose - Callback when the component is closed
+ * @returns JSX for the enemies component
+ */
 const Enemies = ({ onSelect, onClose }) => {
   const [enemies, setEnemies] = useState([]);
 
+  // Fetch enemies from the backend
   useEffect(() => {
     const fetchEnemies = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/enemy/all", {
-          withCredentials: true,
-        });
-        setEnemies(response.data.enemies);
+        const responseData = await axios.get(
+          "http://localhost:8000/enemy/all",
+          {
+            withCredentials: true,
+          },
+        );
+        setEnemies(responseData.data.enemies);
       } catch (error) {
         console.error("Error fetching enemies:", error);
       }
@@ -33,8 +43,9 @@ const Enemies = ({ onSelect, onClose }) => {
           <div
             key={enemy.id}
             className={styles.enemyCard}
+            // التعديل هنا: الصورة فقط، مثل Weapons تماماً
             style={{
-              backgroundImage: `linear-gradient(to right, rgba(0,0,0,0.9) 35%, rgba(0,0,0,0.2) 100%), url(${enemy.image})`,
+              backgroundImage: `url(${enemy.image})`,
             }}
             onClick={() => {
               onSelect(enemy);
