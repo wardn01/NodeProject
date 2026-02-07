@@ -16,7 +16,12 @@ const getEnemies = (req, res) => {
         .json({ message: "Server error fetching enemies." });
     }
 
-    res.status(200).json({ enemies: results });
+    const enemies = results.map((enemy) => ({
+      ...enemy,
+      image: `${req.protocol}://${req.get("host")}/uploads/enemy/${enemy.image}`,
+    }));
+
+    res.status(200).json({ enemies: enemies });
   });
 };
 
@@ -44,7 +49,12 @@ const getEnemy = (req, res) => {
       return res.status(404).json({ message: "Enemy not found!" });
     }
 
-    res.status(200).json({ enemy: results[0] });
+    const enemy = {
+      ...results[0],
+      image: `${req.protocol}://${req.get("host")}/uploads/enemy/${results[0].image}`,
+    };
+
+    res.status(200).json({ enemy: enemy });
   });
 };
 

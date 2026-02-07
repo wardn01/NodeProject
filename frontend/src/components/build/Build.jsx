@@ -79,7 +79,6 @@ const Build = ({ buildData, refreshBuilds }) => {
 
       <div className={styles.arena}>
         <div className={styles.leftSide}>
-          <div className={styles.imagePlaceholder}>Enemy Image</div>
           <Enemy />
         </div>
 

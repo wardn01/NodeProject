@@ -31,24 +31,30 @@ const Weapons = ({ onSelect, onClose }) => {
           X
         </p>
       </div>
-      {weapons.map((weapon) => (
-        <div
-          key={weapon.id}
-          className={styles.weaponCard}
-          onClick={() => {
-            onSelect(weapon);
-            onClose();
-          }}
-        >
-          <p className={styles.weaponName}>{weapon.name}</p>
-          <p className={styles.weaponDetail}> Type: {weapon.element_type}</p>
-          <p className={styles.weaponDetail}>⚔️ Attack: {weapon.base_damage}</p>
-          <p className={styles.weaponDetail}>
-            Description: {weapon.description}
-          </p>
-        </div>
-      ))}
+      {weapons.map((weapon) => {
+        return (
+          <div
+            key={weapon.id}
+            className={`${styles.weaponCard} ${styles.weaponImage}`}
+            style={{ backgroundImage: `url(${weapon.image})` }}
+            onClick={() => {
+              onSelect(weapon);
+              onClose();
+            }}
+          >
+            <p className={styles.weaponName}>{weapon.name}</p>
+            <p className={styles.weaponDetail}> Type: {weapon.element_type}</p>
+            <p className={styles.weaponDetail}>
+              ⚔️ Attack: {weapon.base_damage}
+            </p>
+            <p className={styles.weaponDetail}>
+              Description: {weapon.description}
+            </p>
+          </div>
+        );
+      })}
     </div>
   );
 };
+
 export default Weapons;
