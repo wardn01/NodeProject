@@ -1,8 +1,8 @@
 import classes from "./footer.module.css";
 
 /**
- * footer component
- * @returns footer jsx
+ * Footer component
+ * @returns JSX for the footer component
  */
 function Footer() {
   const year = new Date().getFullYear();

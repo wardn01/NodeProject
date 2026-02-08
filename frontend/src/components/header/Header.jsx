@@ -4,6 +4,12 @@ import elementCryo from "../../img/element_cryo.webp";
 import elementPyro from "../../img/element_pyro.webp";
 import elementAnemo from "../../img/element_anemo.webp";
 
+/**
+ * Header component
+ * @param {string} page - Current page to determine active navigation item
+ * @param {function} setPage - Function to set the current page
+ * @returns JSX for the header component
+ */
 export default function Header({ page, setPage }) {
   return (
     <header className={styles.header}>

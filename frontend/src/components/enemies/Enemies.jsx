@@ -43,7 +43,6 @@ const Enemies = ({ onSelect, onClose }) => {
           <div
             key={enemy.id}
             className={styles.enemyCard}
-            // التعديل هنا: الصورة فقط، مثل Weapons تماماً
             style={{
               backgroundImage: `url(${enemy.image})`,
             }}

@@ -3,6 +3,11 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
+/**
+ * Auth component for user login and registration
+ * @param {function} setPage - Function to set the current page
+ * @returns JSX for the authentication component
+ */
 function Auth({ setPage }) {
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
@@ -31,6 +36,7 @@ function Auth({ setPage }) {
     checkAuth();
   }, [setPage]);
 
+  // Handle input changes for form fields
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -45,6 +51,7 @@ function Auth({ setPage }) {
     return true;
   };
 
+  // Handle form submission for login and registration
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage("");
@@ -69,6 +76,7 @@ function Auth({ setPage }) {
     }
   };
 
+  // Reset form fields to initial state
   const resetForm = () => {
     setFormData({
       username: "",
@@ -79,6 +87,7 @@ function Auth({ setPage }) {
     });
   };
 
+  // Toggle between login and registration forms
   const handleToggle = () => {
     resetForm();
     setIsLogin(!isLogin);

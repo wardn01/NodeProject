@@ -11,6 +11,7 @@ import CreateBuild from "../createBuild/CreateBuild";
 const Builds = () => {
   const [builds, setBuilds] = useState([]);
 
+  // Fetch builds from the server
   const fetchBuilds = async () => {
     try {
       const responseData = await axios.get("http://localhost:8000/build/all", {

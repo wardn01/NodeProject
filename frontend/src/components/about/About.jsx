@@ -1,5 +1,9 @@
 import styles from "./about.module.css";
 
+/**
+ * About component
+ * @returns JSX for the about component
+ */
 function About() {
   return (
     <div className={styles.aboutContainer}>
