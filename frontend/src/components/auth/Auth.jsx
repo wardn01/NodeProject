@@ -30,7 +30,9 @@ function Auth({ setPage }) {
         });
         setPage("aboutPage");
       } catch (error) {
-        console.error("Error checking authentication:", error);
+                if (error.response && error.response.status !== 401) {
+          console.error("Authentication check failed:", error);
+        }
       }
     };
     checkAuth();
