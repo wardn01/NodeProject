@@ -22,15 +22,13 @@ function Auth({ setPage }) {
   const [eyeInvisibleConfirm, setEyeInvisibleConfirm] = useState(true);
 
   // Check authentication status on component mount
- useEffect(() => {
+  useEffect(() => {
     const checkAuth = async () => {
       try {
         const response = await axios.get("http://localhost:8000/user/profile", {
           withCredentials: true,
         });
-        if (response.data.authenticated) {
-          setPage("aboutPage");
-        }
+        setPage("aboutPage");
       } catch (error) {
         if (error.response && error.response.status !== 401) {
           console.error("Authentication check failed:", error);

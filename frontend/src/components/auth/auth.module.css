@@ -1,7 +1,7 @@
 .authContainer {
   width: 100%;
   max-width: 450px;
-  margin: 80px auto;
+  margin: auto;
   padding: 40px;
   background-color: var(--color-deep-blue);
   border: 2px solid var(--color-slate-blue);
