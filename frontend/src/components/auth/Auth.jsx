@@ -1,6 +1,6 @@
-import axios from "axios";
 import styles from "./auth.module.css";
-import { useState } from "react";
+import axios from "axios";
+import { useState, useEffect } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 function Auth({ setPage }) {
@@ -15,6 +15,21 @@ function Auth({ setPage }) {
   const [errorMessage, setErrorMessage] = useState("");
   const [eyeInvisible, setEyeInvisible] = useState(true);
   const [eyeInvisibleConfirm, setEyeInvisibleConfirm] = useState(true);
+
+  // Check authentication status on component mount
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        await axios.get("http://localhost:8000/user/profile", {
+          withCredentials: true,
+        });
+        setPage("aboutPage");
+      } catch (error) {
+        console.error("Error checking authentication:", error);
+      }
+    };
+    checkAuth();
+  }, [setPage]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });

@@ -1,6 +1,9 @@
 const db = require("../dbSingleton").getConnection(); // db
+const fs = require("fs");
+const path = require("path");
 
-// -------------------- Get All Builds for User -------------------- //
+// ------------------------------ Get All Builds for User ------------------------------ //
+// Get all builds for the logged-in user
 const getBuilds = (req, res) => {
   const userId = req.session.user.id;
 
@@ -12,6 +15,7 @@ const getBuilds = (req, res) => {
       return res.status(500).json({ message: "Error fetching builds" });
     }
 
+    // Map results to include full image URL if image exists
     const builds = results.map((build) => ({
       ...build,
       image: build.image
@@ -23,12 +27,19 @@ const getBuilds = (req, res) => {
   });
 };
 
-// -------------------- Create New Build -------------------- //
+// ------------------------------ Create New Build ------------------------------ //
+// Create a new build for the logged-in user
 const createBuild = (req, res) => {
   const userId = req.session.user.id;
   const buildName = req.session.build_name;
 
-  const weapon_id = req.body.weapon_id || 1;
+  let weapon_id = req.body.weapon_id || 1;
+
+  // Ensure weapon_id is a valid number
+  weapon_id = Number(weapon_id);
+  if (isNaN(weapon_id) || weapon_id < 1) {
+    weapon_id = 1; // Default to 1 if invalid
+  }
 
   const insertQuery = `
       INSERT INTO builds (user_id,weapon_id,enemy_id, build_name, points, hp, attack, defense, image) 
@@ -60,43 +71,68 @@ const createBuild = (req, res) => {
   });
 };
 
-// -------------------- Update Build -------------------- //
+// ------------------------------ Update Build ------------------------------ //
+// Update an existing build for the logged-in user
 const updateBuild = (req, res) => {
   const buildId = req.params.id;
   const userId = req.session.user.id;
   const data = req.body;
   const imageName = req.file ? req.file.filename : null;
 
+  // If new image uploaded, delete old image first
+  if (imageName) {
+    const getImageQuery =
+      "SELECT image FROM builds WHERE id = ? AND user_id = ?";
+    db.query(getImageQuery, [buildId, userId], (err, results) => {
+      if (err) {
+        console.error("Error fetching old image:", err);
+      } else if (results.length > 0 && results[0].image) {
+        const oldImagePath = path.join(
+          __dirname,
+          "..",
+          "uploads",
+          "build",
+          results[0].image,
+        );
+        fs.unlink(oldImagePath, (unlinkErr) => {
+          if (unlinkErr) {
+            console.error("Error deleting old image:", unlinkErr);
+          } else {
+            console.log("Old image deleted:", results[0].image);
+          }
+        });
+      }
+    });
+  }
+
   let updates = [];
   let values = [];
 
+  // Build update query with sanitized data
   const fields = ["hp", "attack", "defense", "points", "weapon_id", "enemy_id"];
   fields.forEach((field) => {
     if (data[field] !== undefined) {
-      let value =
-        data[field] === "" || data[field] === "null" ? null : data[field];
-
       updates.push(`${field} = ?`);
-      values.push(value);
+      values.push(data[field]);
     }
   });
 
+  // If an image was uploaded, add it to the update query
   if (imageName) {
     updates.push("image = ?");
     values.push(imageName);
-  }
-
-  if (updates.length === 0) {
-    return res.status(400).json({ message: "No data provided to update." });
   }
 
   const query = `UPDATE builds SET ${updates.join(", ")} WHERE id = ? AND user_id = ?`;
   values.push(buildId, userId);
 
   db.query(query, values, (err, result) => {
-    if (err)
+    if (err) {
+      console.error("Error updating build:", err);
       return res.status(500).json({ message: "Failed to update build." });
+    }
 
+    // If an image was uploaded, include the full URL in the response
     const imageUrl = imageName
       ? `${req.protocol}://${req.get("host")}/uploads/build/${imageName}`
       : null;
@@ -105,10 +141,38 @@ const updateBuild = (req, res) => {
   });
 };
 
-// -------------------- Delete Build -------------------- //
+// ------------------------------ Delete Build ------------------------------ //
+// Delete a build for the logged-in user
 const deleteBuild = (req, res) => {
   const buildId = req.params.id;
   const userId = req.session.user.id;
+
+  // First, get the image filename to delete it
+  const getImageQuery = "SELECT image FROM builds WHERE id = ? AND user_id = ?";
+  db.query(getImageQuery, [buildId, userId], (err, results) => {
+    if (err) {
+      console.error("Error fetching build image:", err);
+      return res.status(500).json({ message: "Error deleting build" });
+    }
+
+    // Delete the image file if it exists
+    if (results.length > 0 && results[0].image) {
+      const imagePath = path.join(
+        __dirname,
+        "..",
+        "uploads",
+        "build",
+        results[0].image,
+      );
+      fs.unlink(imagePath, (unlinkErr) => {
+        if (unlinkErr) {
+          console.error("Error deleting image file:", unlinkErr);
+        } else {
+          console.log("Image deleted:", results[0].image);
+        }
+      });
+    }
+  });
 
   const query = `DELETE FROM builds WHERE id = ? AND user_id = ?`;
 
@@ -117,13 +181,10 @@ const deleteBuild = (req, res) => {
       console.error("Error deleting build:", err);
       return res.status(500).json({ message: "Error deleting build" });
     }
-    if (result.affectedRows === 0) {
-      return res
-        .status(404)
-        .json({ message: "Build not found or unauthorized" });
-    }
+
     res.status(200).json({ message: "Build deleted successfully!" });
   });
 };
 
+// ------------------------------ Export Controller Functions ------------------------------ //
 module.exports = { getBuilds, createBuild, updateBuild, deleteBuild };

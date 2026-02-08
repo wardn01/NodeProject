@@ -4,7 +4,7 @@ const userController = require("../controllers/userController");
 const checkAuth = require("../middleware/authMiddleware");
 const checkUser = require("../middleware/userMiddleware");
 
-// user/register
+// user/register - Register a new user
 router.post(
   "/register",
   checkUser.checkData,
@@ -16,7 +16,7 @@ router.post(
   userController.register,
 );
 
-// user/login
+// user/login - Login an existing user
 router.post(
   "/login",
   checkUser.checkData,
@@ -24,7 +24,7 @@ router.post(
   userController.login,
 );
 
-// user/update
+// user/update - Update user profile (nickname, password)
 router.post(
   "/update",
   checkAuth,
@@ -33,10 +33,10 @@ router.post(
   userController.update,
 );
 
-// user/profile
+// user/profile - Get user profile information
 router.get("/profile", checkAuth, userController.profile);
 
-// user/logout
+// user/logout - Logout the current user
 router.post("/logout", checkAuth, userController.logout);
 
 module.exports = router;

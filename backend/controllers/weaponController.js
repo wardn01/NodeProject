@@ -1,6 +1,7 @@
 const db = require("../dbSingleton").getConnection(); // db
 
-// -------------------- Get All Weapons -------------------- //
+// ------------------------------ Get All Weapons ------------------------------ //
+// Get all weapons
 const getWeapons = (req, res) => {
   const query = "SELECT * FROM weapons";
 
@@ -12,16 +13,24 @@ const getWeapons = (req, res) => {
 
     const weapon = results.map((weapon) => ({
       ...weapon,
-      image: `${req.protocol}://${req.get("host")}/uploads/weapon/${weapon.image}`,
+      image: weapon.image
+        ? `${req.protocol}://${req.get("host")}/uploads/weapon/${weapon.image}`
+        : null,
     }));
 
     res.status(200).json({ weapons: weapon });
   });
 };
 
-// -------------------- Get Weapon by ID -------------------- //
+// ------------------------------ Get Weapon by ID ------------------------------ //
+// Get details of a specific weapon by ID
 const getWeapon = (req, res) => {
   const weaponId = req.params.id;
+
+  if (isNaN(weaponId)) {
+    return res.status(400).json({ message: "Invalid weapon ID" });
+  }
+
   const query = "SELECT * FROM weapons WHERE id = ?";
 
   db.query(query, [weaponId], (err, results) => {
@@ -36,11 +45,14 @@ const getWeapon = (req, res) => {
 
     const weapon = {
       ...results[0],
-      image: `${req.protocol}://${req.get("host")}/uploads/weapon/${results[0].image}`,
+      image: results[0].image
+        ? `${req.protocol}://${req.get("host")}/uploads/weapon/${results[0].image}`
+        : null,
     };
 
     res.status(200).json({ weapon: weapon });
   });
 };
 
+// ------------------------------ Export Controller Functions ------------------------------ //
 module.exports = { getWeapons, getWeapon };

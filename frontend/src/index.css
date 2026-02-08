@@ -4,13 +4,14 @@
   --color-slate-blue: #324a5f;
   --color-light-grey: #ccc9dc;
   --color-error-red: #ff4d4d;
-  --color-gold: gold; /* can be customized any gold */
-  --color-white: white; /* can be customized any white */
-  --color-black: black; /* can be customized any black */
-  --color-green: rgb(0, 170, 0); /* can be customized any green */
+  --color-gold: gold;
+  --color-white: white;
+  --color-black: black;
+  --color-green: rgb(0, 170, 0);
 
   --font-family-header: "Outfit", sans-serif;
   --font-family-main: "Plus Jakarta Sans", sans-serif;
+  --font-family-about: "Roboto Mono", monospace;
   --font-family-button: "Roboto", sans-serif;
   --font-family-rpg: "'Courier New', Courier, monospace";
 }

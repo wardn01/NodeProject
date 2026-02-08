@@ -1,7 +1,8 @@
 const db = require("../dbSingleton").getConnection(); // db
 const bcrypt = require("bcrypt"); // password
 
-// -------------------- User Registration -------------------- //
+// ------------------------------ User Registration ------------------------------ //
+// Register a new user
 const register = (req, res) => {
   const { username, nickname, email, password } = req.body;
 
@@ -27,7 +28,8 @@ const register = (req, res) => {
   });
 };
 
-// -------------------- User Login -------------------- //
+// ------------------------------ User Login ------------------------------ //
+// Login an existing user
 const login = (req, res) => {
   const { password } = req.body;
   const user = req.user;
@@ -52,8 +54,13 @@ const login = (req, res) => {
   });
 };
 
-// -------------------- Update User Profile -------------------- //
+// ------------------------------ Update User Profile ------------------------------ //
+// Update user profile (nickname and/or password)
 const update = (req, res) => {
+  if (!req.session || !req.session.user) {
+    return res.status(401).json({ message: "Not authenticated" });
+  }
+
   const userId = req.session.user.id;
   const { nickname, password } = req.body;
 
@@ -101,7 +108,8 @@ const update = (req, res) => {
   }
 };
 
-// -------------------- Get User Profile -------------------- //
+// ------------------------------ Get User Profile ------------------------------ //
+// Get the profile of the logged-in user
 const profile = (req, res) => {
   const user = req.session?.user;
 
@@ -116,8 +124,13 @@ const profile = (req, res) => {
   });
 };
 
-// -------------------- User Logout -------------------- //
+// ------------------------------ User Logout ------------------------------ //
+// Logout the current user
 const logout = (req, res) => {
+  if (!req.session) {
+    return res.status(200).send({ message: "Already logged out." });
+  }
+
   req.session.destroy((err) => {
     if (err) {
       console.error("Logout Error:", err);
@@ -129,5 +142,5 @@ const logout = (req, res) => {
   });
 };
 
-// -------------------- Export Controllers -------------------- //
+// ------------------------------ Export Controllers ------------------------------ //
 module.exports = { register, login, update, profile, logout };

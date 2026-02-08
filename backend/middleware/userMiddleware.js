@@ -1,7 +1,11 @@
 const db = require("../dbSingleton").getConnection(); // db
-
+// ------------------------------ User Middleware ------------------------------ //
 // Validate required fields.
 const checkData = (req, res, next) => {
+  if (!req.body) {
+    return res.status(400).json({ message: "Request body is required." });
+  }
+
   const { username, password, nickname, email } = req.body;
   if (req.path === "/register") {
     if (!username || !password || !nickname || !email) {
@@ -110,6 +114,7 @@ const checkUserIfExists = (req, res, next) => {
   }
 };
 
+// ------------------------------ Export Middleware ------------------------------ //
 module.exports = {
   checkUsername,
   checkPassword,

@@ -1,6 +1,7 @@
 const db = require("../dbSingleton").getConnection();
 
-// -------------------- Get All Enemies -------------------- //
+// ------------------------------ Get All Enemies ------------------------------ //
+// Get all enemies sorted by total power (hp + attack + defense)
 const getEnemies = (req, res) => {
   const query = `
         SELECT *, (hp + attack + defense) AS total_power 
@@ -16,16 +17,20 @@ const getEnemies = (req, res) => {
         .json({ message: "Server error fetching enemies." });
     }
 
+    // Map results to include full image URL
     const enemies = results.map((enemy) => ({
       ...enemy,
-      image: `${req.protocol}://${req.get("host")}/uploads/enemy/${enemy.image}`,
+      image: enemy.image
+        ? `${req.protocol}://${req.get("host")}/uploads/enemy/${enemy.image}`
+        : null,
     }));
 
     res.status(200).json({ enemies: enemies });
   });
 };
 
-// -------------------- Get Enemy by ID -------------------- //
+// ------------------------------ Get Enemy by ID ------------------------------ //
+// Get details of a specific enemy by ID
 const getEnemy = (req, res) => {
   const enemyId = req.params.id;
 
@@ -49,13 +54,17 @@ const getEnemy = (req, res) => {
       return res.status(404).json({ message: "Enemy not found!" });
     }
 
+    // Include full image URL in the response
     const enemy = {
       ...results[0],
-      image: `${req.protocol}://${req.get("host")}/uploads/enemy/${results[0].image}`,
+      image: results[0].image
+        ? `${req.protocol}://${req.get("host")}/uploads/enemy/${results[0].image}`
+        : null,
     };
 
     res.status(200).json({ enemy: enemy });
   });
 };
 
+// ------------------------------ Export Controller Functions ------------------------------ //
 module.exports = { getEnemies, getEnemy };
