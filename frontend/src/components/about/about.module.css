@@ -8,7 +8,7 @@
 }
 
 .contentWrapper {
-  max-width: 800px;
+  max-width: 1000px;
   width: 100%;
   background-color: rgba(12, 24, 33, 0.85);
   border: 2px solid var(--color-slate-blue);
@@ -33,7 +33,7 @@
 
 .subtitle {
   font-family: var(--font-family-header);
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   color: var(--color-light-grey);
   text-transform: uppercase;
   letter-spacing: 5px;
@@ -45,10 +45,10 @@
 
 .description {
   font-family: var(--font-family-main);
-  font-size: 1.1rem;
+  font-size: 1.4rem;
   line-height: 1.8;
   color: var(--color-white);
-  max-width: 700px;
+  max-width: 900px;
   margin: 0 auto;
 }
 
@@ -70,7 +70,7 @@
   border-radius: 12px;
   padding: 20px;
   flex: 1;
-  min-width: 200px;
+  min-width: 250px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -100,7 +100,7 @@
 .statCard p {
   color: var(--color-light-grey);
   font-family: var(--font-family-main);
-  font-size: 0.9rem;
+  font-size: 1.4rem;
   margin: 0;
   opacity: 0.8;
 }
@@ -111,7 +111,7 @@
   padding-top: 20px;
   color: #555;
   font-family: var(--font-family-main);
-  font-size: 0.9rem;
+  font-size: 1.4rem;
 }
 
 .version {

@@ -41,7 +41,7 @@ function About() {
 
         <div className={styles.footer}>
           <p>Created for the bravest fighters.</p>
-          <p className={styles.version}>v1.0.0 Alpha</p>
+          <p className={styles.version}>v1.0.0 Visions</p>
         </div>
       </div>
     </div>

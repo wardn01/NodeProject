@@ -28,12 +28,14 @@ const createBuild = (req, res) => {
   const userId = req.session.user.id;
   const buildName = req.session.build_name;
 
+  const weapon_id = req.body.weapon_id || 1;
+
   const insertQuery = `
       INSERT INTO builds (user_id,weapon_id,enemy_id, build_name, points, hp, attack, defense, image) 
-      VALUES (?, ?, ?, ?, 100, 100, 10, 10, NULL)
+      VALUES (?, ?, ?, ?, 100, 50, 10, 10, NULL)
   `;
 
-  db.query(insertQuery, [userId, null, null, buildName], (err, result) => {
+  db.query(insertQuery, [userId, weapon_id, null, buildName], (err, result) => {
     if (err) {
       console.error("Error inserting build:", err);
       return res
@@ -45,11 +47,11 @@ const createBuild = (req, res) => {
       message: "New build created!",
       build: {
         id: result.insertId,
-        weapon_id: null,
+        weapon_id: weapon_id,
         enemy_id: null,
         build_name: buildName,
         points: 100,
-        hp: 100,
+        hp: 50,
         attack: 10,
         defense: 10,
         image: null,

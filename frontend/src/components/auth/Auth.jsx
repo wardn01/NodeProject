@@ -1,13 +1,8 @@
 import axios from "axios";
 import styles from "./auth.module.css";
 import { useState } from "react";
-import { AiOutlineEye } from "react-icons/ai";
-import { AiOutlineEyeInvisible } from "react-icons/ai";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
-/**
- * auth component
- * @returns Auth.jsx
- */
 function Auth({ setPage }) {
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
@@ -21,43 +16,56 @@ function Auth({ setPage }) {
   const [eyeInvisible, setEyeInvisible] = useState(true);
   const [eyeInvisibleConfirm, setEyeInvisibleConfirm] = useState(true);
 
-  // Handle input changes
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Handle form submission for login and registration
+  const validate = () => {
+    const { password } = formData;
+
+    if (!isLogin && password !== formData.confirmPassword) {
+      setErrorMessage("Passwords do not match!");
+      return false;
+    }
+    return true;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage("");
 
-    if (!isLogin && formData.password !== formData.confirmPassword) {
-      setErrorMessage("Passwords do not match!");
-      return;
-    }
+    if (!validate()) return;
 
     const url = isLogin
       ? "http://localhost:8000/user/login"
       : "http://localhost:8000/user/register";
     try {
-      const loginData = await axios.post(url, formData, {
-        withCredentials: true,
-      });
+      await axios.post(url, formData, { withCredentials: true });
       if (isLogin) {
-        setPage("buildPage");
+        setPage("aboutPage");
       } else {
         setIsLogin(true);
+        resetForm();
       }
     } catch (error) {
-      if (error?.response?.data?.message) {
-        setErrorMessage(error.response.data.message);
-      } else {
-        console.error("Error during authentication:", error);
-      }
+      setErrorMessage(
+        error?.response?.data?.message || "Error during authentication.",
+      );
     }
   };
-  // Toggle between login and registration forms
+
+  const resetForm = () => {
+    setFormData({
+      username: "",
+      nickname: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    });
+  };
+
   const handleToggle = () => {
+    resetForm();
     setIsLogin(!isLogin);
     setErrorMessage("");
   };
@@ -68,37 +76,45 @@ function Auth({ setPage }) {
         <p className={styles.authTitle}>
           {isLogin ? "LOGIN" : "CREATE ACCOUNT"}
         </p>
+
         {!isLogin && (
           <input
             className={styles.authInput}
             type="text"
             name="username"
             placeholder="User Name"
+            value={formData.username}
             onChange={handleChange}
           />
         )}
+
         {!isLogin && (
           <input
             className={styles.authInput}
             type="text"
             name="nickname"
             placeholder="Nick Name"
+            value={formData.nickname}
             onChange={handleChange}
           />
         )}
+
         <input
           className={styles.authInput}
-          type={(!isLogin && "email") || "text"}
-          name={(!isLogin && "email") || "username"}
-          placeholder={(!isLogin && "Email Address") || "Username or Email"}
+          type={!isLogin ? "email" : "text"}
+          name={!isLogin ? "email" : "username"}
+          placeholder={!isLogin ? "Email Address" : "Username or Email"}
+          value={!isLogin ? formData.email : formData.username}
           onChange={handleChange}
         />
+
         <div className={styles.passwordInputContainer}>
           <input
             className={styles.authInput}
             type={eyeInvisible ? "password" : "text"}
             name="password"
             placeholder="Password"
+            value={formData.password}
             onChange={handleChange}
           />
           <span
@@ -108,6 +124,7 @@ function Auth({ setPage }) {
             {eyeInvisible ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
           </span>
         </div>
+
         {!isLogin && (
           <div className={styles.passwordInputContainer}>
             <input
@@ -115,6 +132,7 @@ function Auth({ setPage }) {
               type={eyeInvisibleConfirm ? "password" : "text"}
               name="confirmPassword"
               placeholder="Confirm Password"
+              value={formData.confirmPassword}
               onChange={handleChange}
             />
             <span
@@ -129,6 +147,7 @@ function Auth({ setPage }) {
             </span>
           </div>
         )}
+
         {errorMessage && <p className={styles.errorMessage}>{errorMessage}</p>}
 
         <button type="submit" className={styles.authSubmitButton}>
@@ -144,4 +163,5 @@ function Auth({ setPage }) {
     </div>
   );
 }
+
 export default Auth;

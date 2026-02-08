@@ -81,21 +81,24 @@ const Build = ({ buildData, refreshBuilds }) => {
 
   // Handle stat changes (increase/decrease)
   const handleStatChange = (stat, operation) => {
+    const changeAmount = stat === "hp" ? 50 : 10;
+
     if (operation === "increase") {
       if (stats.points > 0) {
         setStats({
           ...stats,
-          [stat]: stats[stat] + 10,
+          [stat]: stats[stat] + changeAmount,
           points: stats.points - 1,
         });
         setIsEdited(true);
       }
     } else {
-      const minValues = { hp: 100, attack: 10, defense: 10 };
+      const minValues = { hp: 50, attack: 10, defense: 10 };
+
       if (stats[stat] > minValues[stat]) {
         setStats({
           ...stats,
-          [stat]: stats[stat] - 10,
+          [stat]: stats[stat] - changeAmount,
           points: stats.points + 1,
         });
         setIsEdited(true);
@@ -106,15 +109,36 @@ const Build = ({ buildData, refreshBuilds }) => {
   // Handle saving the build
   const handleSave = async () => {
     try {
-      await axios.put(
+      const formData = new FormData();
+
+      formData.append("hp", stats.hp);
+      formData.append("attack", stats.attack);
+      formData.append("defense", stats.defense);
+      formData.append("points", stats.points);
+
+      formData.append("weapon_id", selectedWeapon ? selectedWeapon.id : "");
+      formData.append("enemy_id", selectedEnemy ? selectedEnemy.id : "");
+
+      if (stats.imageFile) {
+        formData.append("image", stats.imageFile);
+      }
+
+      const response = await axios.put(
         `http://localhost:8000/build/update/${buildData.id}`,
+        formData,
         {
-          ...stats,
-          weapon_id: selectedWeapon ? selectedWeapon.id : null,
-          enemy_id: selectedEnemy ? selectedEnemy.id : null,
+          withCredentials: true,
+          headers: { "Content-Type": "multipart/form-data" },
         },
-        { withCredentials: true },
       );
+
+      if (response.data.imageUrl) {
+        setStats((prev) => ({
+          ...prev,
+          image: response.data.imageUrl,
+          imageFile: null,
+        }));
+      }
 
       setIsEdited(false);
       refreshBuilds();
@@ -136,37 +160,19 @@ const Build = ({ buildData, refreshBuilds }) => {
   };
 
   // Handle image upload
-  const handleImageUpload = async (e) => {
+  const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
     const previewUrl = URL.createObjectURL(file);
-    setStats((prevStats) => ({ ...prevStats, image: previewUrl }));
 
-    const formData = new FormData();
-    formData.append("image", file);
+    setStats((prevStats) => ({
+      ...prevStats,
+      image: previewUrl,
+      imageFile: file,
+    }));
 
-    try {
-      const responseData = await axios.put(
-        `http://localhost:8000/build/update/${buildData.id}`,
-        formData,
-        {
-          withCredentials: true,
-          headers: { "Content-Type": "multipart/form-data" },
-        },
-      );
-
-      if (responseData.data.imageUrl) {
-        setStats((prevStats) => ({
-          ...prevStats,
-          image: responseData.data.imageUrl,
-        }));
-      }
-
-      refreshBuilds();
-    } catch (error) {
-      console.error("Error uploading image:", error);
-    }
+    setIsEdited(true);
   };
 
   const heroImageStyle = stats.image
